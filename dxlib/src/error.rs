@@ -4,8 +4,6 @@ pub type Result<T> = std::result::Result<T, DxLibError>;
 
 #[derive(Debug, Error)]
 pub enum DxLibError {
-    #[error("{0:?}")]
-    LibraryCallFailed(#[from] libloading::Error),
     #[error("Failed to Initialize")]
     InitializeFailed,
     #[error("Non Zero Returned")]
@@ -20,7 +18,6 @@ pub enum DxLibError {
 
 pub trait I32CodeExt: Sized {
     fn ensure_zero(&self) -> Result<()>;
-
     fn ensure_positive(&self) -> Result<Self>;
     fn ensure_not_minus1(&self) -> Result<Self>;
 }

@@ -1,5 +1,11 @@
 pub mod application;
+pub mod color;
 pub mod error;
+pub mod input;
 pub mod live2d;
-pub mod math;
+pub mod matrix;
 pub mod screen;
+pub mod shapes;
+pub mod utils;
+pub mod vector;
+pub mod writer;

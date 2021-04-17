@@ -10,7 +10,11 @@ edition = "2018"
 dxlib-sys = { path = "../dxlib-sys" }
 thiserror = "1.0.24"
 anyhow = "1.0.40"
-libloading = "0.7.0"
+bitflags = "1.2.1"
+enum-iterator = "0.6.0"
+encoding_rs = "0.8.28"
+derive_more = "0.99.13"
+num-traits = "0.2.14"
 
 [dev-dependencies]
 rand = "0.8"

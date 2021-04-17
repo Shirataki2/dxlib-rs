@@ -185,7 +185,7 @@ extern "C" {
     pub fn dx_DxLib_GlobalStructInitialize() -> i32;
     pub fn dx_DxLib_IsInit() -> i32;
     pub fn dx_GetLastErrorCode() -> i32;
-    pub fn dx_GetLastErrorMessage(StringBuffer: *mut u8, StringBufferBytes: i32) -> i32;
+    pub fn dx_GetLastErrorMessage(StringBuffer: *mut i8, StringBufferBytes: i32) -> i32;
     pub fn dx_ProcessMessage() -> i32;
     pub fn dx_SetAlwaysRunFlag(Flag: i32) -> i32;
     pub fn dx_WaitTimer(WaitTime: i32) -> i32;
@@ -206,14 +206,14 @@ extern "C" {
     pub fn dx_GetRand(RandMax: i32) -> i32;
     pub fn dx_SRand(Seed: i32) -> i32;
     pub fn dx_GetBatteryLifePercent() -> i32;
-    pub fn dx_GetClipboardText(DestBuffer: *mut u8) -> i32;
+    pub fn dx_GetClipboardText(DestBuffer: *mut i8) -> i32;
     pub fn dx_SetClipboardText(Text: *const i8) -> i32;
     pub fn dx_SetClipboardTextWithStrLen(Text: *const i8, TextLength: usize) -> i32;
     pub fn dx_GetPrivateProfileStringDx(
         AppName: *const i8,
         KeyName: *const i8,
         Default: *const i8,
-        ReturnedStringBuffer: *mut u8,
+        ReturnedStringBuffer: *mut i8,
         ReturnedStringBufferBytes: usize,
         IniFilePath: *const i8,
         IniFileCharCodeFormat: i32,
@@ -225,7 +225,7 @@ extern "C" {
         KeyNameLength: usize,
         Default: *const i8,
         DefaultLength: usize,
-        ReturnedStringBuffer: *mut u8,
+        ReturnedStringBuffer: *mut i8,
         ReturnedStringBufferBytes: usize,
         IniFilePath: *const i8,
         IniFilePathLength: usize,
@@ -252,7 +252,7 @@ extern "C" {
         AppName: *const i8,
         KeyName: *const i8,
         Default: *const i8,
-        ReturnedStringBuffer: *mut u8,
+        ReturnedStringBuffer: *mut i8,
         ReturnedStringBufferBytes: usize,
         IniFileImage: *const libc::c_void,
         IniFileImageBytes: usize,
@@ -265,7 +265,7 @@ extern "C" {
         KeyNameLength: usize,
         Default: *const i8,
         DefaultLength: usize,
-        ReturnedStringBuffer: *mut u8,
+        ReturnedStringBuffer: *mut i8,
         ReturnedStringBufferBytes: usize,
         IniFileImage: *const libc::c_void,
         IniFileImageBytes: usize,
@@ -314,6 +314,7 @@ extern "C" {
     pub fn dx_SetLogFontSize(Size: i32) -> i32;
     pub fn dx_SetLogFontHandle(FontHandle: i32) -> i32;
     pub fn dx_SetLogDrawArea(x1: i32, y1: i32, x2: i32, y2: i32) -> i32;
+    pub fn dx_printfDx(FormatString: *const i8) -> i32;
     pub fn dx_putsDx(String: *const i8, NewLine: i32) -> i32;
     pub fn dx_putsDxWithStrLen(String: *const i8, StringLength: usize, NewLine: i32) -> i32;
     pub fn dx_clsDx() -> i32;
@@ -394,38 +395,38 @@ extern "C" {
     pub fn dx_SetUseCharCodeFormat(CharCodeFormat: i32) -> i32;
     pub fn dx_GetUseCharCodeFormat() -> i32;
     pub fn dx_Get_wchar_t_CharCodeFormat() -> i32;
-    pub fn dx_strcpyDx(Dest: *mut u8, Src: *const i8) -> ();
-    pub fn dx_strcpy_sDx(Dest: *mut u8, DestBytes: usize, Src: *const i8) -> ();
-    pub fn dx_strpcpyDx(Dest: *mut u8, Src: *const i8, Pos: i32) -> ();
-    pub fn dx_strpcpy_sDx(Dest: *mut u8, DestBytes: usize, Src: *const i8, Pos: i32) -> ();
-    pub fn dx_strpcpy2Dx(Dest: *mut u8, Src: *const i8, Pos: i32) -> ();
-    pub fn dx_strpcpy2_sDx(Dest: *mut u8, DestBytes: usize, Src: *const i8, Pos: i32) -> ();
-    pub fn dx_strncpyDx(Dest: *mut u8, Src: *const i8, Num: i32) -> ();
-    pub fn dx_strncpy_sDx(Dest: *mut u8, DestBytes: usize, Src: *const i8, Num: i32) -> ();
-    pub fn dx_strncpy2Dx(Dest: *mut u8, Src: *const i8, Num: i32) -> ();
-    pub fn dx_strncpy2_sDx(Dest: *mut u8, DestBytes: usize, Src: *const i8, Num: i32) -> ();
-    pub fn dx_strrncpyDx(Dest: *mut u8, Src: *const i8, Num: i32) -> ();
-    pub fn dx_strrncpy_sDx(Dest: *mut u8, DestBytes: usize, Src: *const i8, Num: i32) -> ();
-    pub fn dx_strrncpy2Dx(Dest: *mut u8, Src: *const i8, Num: i32) -> ();
-    pub fn dx_strrncpy2_sDx(Dest: *mut u8, DestBytes: usize, Src: *const i8, Num: i32) -> ();
-    pub fn dx_strpncpyDx(Dest: *mut u8, Src: *const i8, Pos: i32, Num: i32) -> ();
+    pub fn dx_strcpyDx(Dest: *mut i8, Src: *const i8) -> ();
+    pub fn dx_strcpy_sDx(Dest: *mut i8, DestBytes: usize, Src: *const i8) -> ();
+    pub fn dx_strpcpyDx(Dest: *mut i8, Src: *const i8, Pos: i32) -> ();
+    pub fn dx_strpcpy_sDx(Dest: *mut i8, DestBytes: usize, Src: *const i8, Pos: i32) -> ();
+    pub fn dx_strpcpy2Dx(Dest: *mut i8, Src: *const i8, Pos: i32) -> ();
+    pub fn dx_strpcpy2_sDx(Dest: *mut i8, DestBytes: usize, Src: *const i8, Pos: i32) -> ();
+    pub fn dx_strncpyDx(Dest: *mut i8, Src: *const i8, Num: i32) -> ();
+    pub fn dx_strncpy_sDx(Dest: *mut i8, DestBytes: usize, Src: *const i8, Num: i32) -> ();
+    pub fn dx_strncpy2Dx(Dest: *mut i8, Src: *const i8, Num: i32) -> ();
+    pub fn dx_strncpy2_sDx(Dest: *mut i8, DestBytes: usize, Src: *const i8, Num: i32) -> ();
+    pub fn dx_strrncpyDx(Dest: *mut i8, Src: *const i8, Num: i32) -> ();
+    pub fn dx_strrncpy_sDx(Dest: *mut i8, DestBytes: usize, Src: *const i8, Num: i32) -> ();
+    pub fn dx_strrncpy2Dx(Dest: *mut i8, Src: *const i8, Num: i32) -> ();
+    pub fn dx_strrncpy2_sDx(Dest: *mut i8, DestBytes: usize, Src: *const i8, Num: i32) -> ();
+    pub fn dx_strpncpyDx(Dest: *mut i8, Src: *const i8, Pos: i32, Num: i32) -> ();
     pub fn dx_strpncpy_sDx(
-        Dest: *mut u8,
+        Dest: *mut i8,
         DestBytes: usize,
         Src: *const i8,
         Pos: i32,
         Num: i32,
     ) -> ();
-    pub fn dx_strpncpy2Dx(Dest: *mut u8, Src: *const i8, Pos: i32, Num: i32) -> ();
+    pub fn dx_strpncpy2Dx(Dest: *mut i8, Src: *const i8, Pos: i32, Num: i32) -> ();
     pub fn dx_strpncpy2_sDx(
-        Dest: *mut u8,
+        Dest: *mut i8,
         DestBytes: usize,
         Src: *const i8,
         Pos: i32,
         Num: i32,
     ) -> ();
-    pub fn dx_strcatDx(Dest: *mut u8, Src: *const i8) -> ();
-    pub fn dx_strcat_sDx(Dest: *mut u8, DestBytes: usize, Src: *const i8) -> ();
+    pub fn dx_strcatDx(Dest: *mut i8, Src: *const i8) -> ();
+    pub fn dx_strcat_sDx(Dest: *mut i8, DestBytes: usize, Src: *const i8) -> ();
     pub fn dx_strlenDx(Str: *const i8) -> usize;
     pub fn dx_strlen2Dx(Str: *const i8) -> usize;
     pub fn dx_strcmpDx(Str1: *const i8, Str2: *const i8) -> i32;
@@ -436,22 +437,22 @@ extern "C" {
     pub fn dx_strpncmp2Dx(Str1: *const i8, Str2: *const i8, Pos: i32, Num: i32) -> i32;
     pub fn dx_strgetchrDx(Str: *const i8, Pos: i32, CharNums: *mut i32) -> u32;
     pub fn dx_strgetchr2Dx(Str: *const i8, Pos: i32, CharNums: *mut i32) -> u32;
-    pub fn dx_strputchrDx(Str: *mut u8, Pos: i32, CharCode: u32) -> i32;
-    pub fn dx_strputchr2Dx(Str: *mut u8, Pos: i32, CharCode: u32) -> i32;
+    pub fn dx_strputchrDx(Str: *mut i8, Pos: i32, CharCode: u32) -> i32;
+    pub fn dx_strputchr2Dx(Str: *mut i8, Pos: i32, CharCode: u32) -> i32;
     pub fn dx_strstr2Dx(Str1: *const i8, Str2: *const i8) -> i32;
     pub fn dx_strrstr2Dx(Str1: *const i8, Str2: *const i8) -> i32;
     pub fn dx_strchr2Dx(Str: *const i8, CharCode: u32) -> i32;
     pub fn dx_strrchr2Dx(Str: *const i8, CharCode: u32) -> i32;
-    pub fn dx_vsprintfDx(Buffer: *mut u8, FormatString: *const i8, Arg: *mut u8) -> i32;
+    pub fn dx_vsprintfDx(Buffer: *mut i8, FormatString: *const i8, Arg: *mut i8) -> i32;
     pub fn dx_vsnprintfDx(
-        Buffer: *mut u8,
+        Buffer: *mut i8,
         BufferSize: usize,
         FormatString: *const i8,
-        Arg: *mut u8,
+        Arg: *mut i8,
     ) -> i32;
     pub fn dx_atoiDx(Str: *const i8) -> i32;
     pub fn dx_atofDx(Str: *const i8) -> f64;
-    pub fn dx_vsscanfDx(String: *const i8, FormatString: *const i8, Arg: *mut u8) -> i32;
+    pub fn dx_vsscanfDx(String: *const i8, FormatString: *const i8, Arg: *mut i8) -> i32;
     pub fn dx_ProcessNetMessage(RunReleaseProcess: i32) -> i32;
     pub fn dx_GetHostIPbyName(
         HostName: *const i8,
@@ -545,8 +546,8 @@ extern "C" {
     pub fn dx_ClearInputCharBuf() -> i32;
     pub fn dx_GetInputChar(DeleteFlag: i32) -> u8;
     pub fn dx_GetInputCharWait(DeleteFlag: i32) -> u8;
-    pub fn dx_GetOneChar(CharBuffer: *mut u8, DeleteFlag: i32) -> i32;
-    pub fn dx_GetOneCharWait(CharBuffer: *mut u8, DeleteFlag: i32) -> i32;
+    pub fn dx_GetOneChar(CharBuffer: *mut i8, DeleteFlag: i32) -> i32;
+    pub fn dx_GetOneCharWait(CharBuffer: *mut i8, DeleteFlag: i32) -> i32;
     pub fn dx_GetCtrlCodeCmp(Char: u8) -> i32;
     pub fn dx_DrawIMEInputString(
         x: i32,
@@ -654,7 +655,7 @@ extern "C" {
         x: i32,
         y: i32,
         BufLength: usize,
-        StrBuffer: *mut u8,
+        StrBuffer: *mut i8,
         CancelValidFlag: i32,
         SingleCharOnlyFlag: i32,
         NumCharOnlyFlag: i32,
@@ -666,19 +667,19 @@ extern "C" {
         x: i32,
         y: i32,
         CharMaxLength: usize,
-        StrBuffer: *mut u8,
+        StrBuffer: *mut i8,
         CancelValidFlag: i32,
     ) -> i32;
     pub fn dx_KeyInputSingleCharString(
         x: i32,
         y: i32,
         CharMaxLength: usize,
-        StrBuffer: *mut u8,
+        StrBuffer: *mut i8,
         CancelValidFlag: i32,
     ) -> i32;
     pub fn dx_KeyInputNumber(x: i32, y: i32, MaxNum: i32, MinNum: i32, CancelValidFlag: i32)
         -> i32;
-    pub fn dx_GetIMEInputModeStr(GetBuffer: *mut u8) -> i32;
+    pub fn dx_GetIMEInputModeStr(GetBuffer: *mut i8) -> i32;
     pub fn dx_SetKeyInputStringColor2(TargetColor: i32, Color: u32) -> i32;
     pub fn dx_ResetKeyInputStringColor2(TargetColor: i32) -> i32;
     pub fn dx_SetKeyInputStringFont(FontHandle: i32) -> i32;
@@ -719,7 +720,7 @@ extern "C" {
     ) -> i32;
     pub fn dx_SetKeyInputNumber(Number: i32, InputHandle: i32) -> i32;
     pub fn dx_SetKeyInputNumberToFloat(Number: f32, InputHandle: i32) -> i32;
-    pub fn dx_GetKeyInputString(StrBuffer: *mut u8, InputHandle: i32) -> i32;
+    pub fn dx_GetKeyInputString(StrBuffer: *mut i8, InputHandle: i32) -> i32;
     pub fn dx_GetKeyInputNumber(InputHandle: i32) -> i32;
     pub fn dx_GetKeyInputNumberToFloat(InputHandle: i32) -> f32;
     pub fn dx_SetKeyInputCursorPosition(Position: i32, InputHandle: i32) -> i32;
@@ -740,7 +741,7 @@ extern "C" {
     pub fn dx_FileRead_idle_chk(FileHandle: i32) -> i32;
     pub fn dx_FileRead_eof(FileHandle: i32) -> i32;
     pub fn dx_FileRead_set_format(FileHandle: i32, CharCodeFormat: i32) -> i32;
-    pub fn dx_FileRead_gets(Buffer: *mut u8, BufferSize: i32, FileHandle: i32) -> i32;
+    pub fn dx_FileRead_gets(Buffer: *mut i8, BufferSize: i32, FileHandle: i32) -> i32;
     pub fn dx_FileRead_getc(FileHandle: i32) -> u8;
     pub fn dx_FileRead_createInfo(ObjectPath: *const i8) -> u32;
     pub fn dx_FileRead_createInfo_WithStrLen(ObjectPath: *const i8, ObjectPathLength: usize)
@@ -763,17 +764,17 @@ extern "C" {
     pub fn dx_GetStreamFunctionDefault() -> i32;
     pub fn dx_ChangeStreamFunction(StreamThread: *const StreamDataShredType2) -> i32;
     pub fn dx_ChangeStreamFunctionW(StreamThreadW: *const StreamDataShredType2W) -> i32;
-    pub fn dx_ConvertFullPath(Src: *const i8, Dest: *mut u8, CurrentDir: *const i8) -> i32;
+    pub fn dx_ConvertFullPath(Src: *const i8, Dest: *mut i8, CurrentDir: *const i8) -> i32;
     pub fn dx_ConvertFullPathWithStrLen(
         Src: *const i8,
         SrcLength: usize,
-        Dest: *mut u8,
+        Dest: *mut i8,
         CurrentDir: *const i8,
         CurrentDirLength: usize,
     ) -> i32;
     pub fn dx_CheckHitKey(KeyCode: i32) -> i32;
     pub fn dx_CheckHitKeyAll(CheckType: i32) -> i32;
-    pub fn dx_GetHitKeyStateAll(KeyStateArray: *mut u8) -> i32;
+    pub fn dx_GetHitKeyStateAll(KeyStateArray: *mut i8) -> i32;
     pub fn dx_GetJoypadNum() -> i32;
     pub fn dx_GetJoypadButtonNum(InputType: i32) -> i32;
     pub fn dx_GetJoypadInputState(InputType: i32) -> i32;
@@ -1657,7 +1658,7 @@ extern "C" {
         UseSizeY: *mut i32,
     ) -> i32;
     pub fn dx_GetGraphMipmapCount(GrHandle: i32) -> i32;
-    pub fn dx_GetGraphFilePath(GrHandle: i32, FilePathBuffer: *mut u8) -> i32;
+    pub fn dx_GetGraphFilePath(GrHandle: i32, FilePathBuffer: *mut i8) -> i32;
     pub fn dx_CheckDrawValidGraph(GrHandle: i32) -> i32;
     pub fn dx_GetMaxGraphTextureSize(SizeX: *mut i32, SizeY: *mut i32) -> i32;
     pub fn dx_GetValidRestoreShredPoi32() -> i32;
@@ -3708,16 +3709,16 @@ extern "C" {
     pub fn dx_SetMaskReverseEffectFlag(ReverseFlag: i32) -> i32;
     pub fn dx_GetMaskScreenData(x1: i32, y1: i32, x2: i32, y2: i32, MaskHandle: i32) -> i32;
     pub fn dx_GetMaskUseFlag() -> i32;
-    pub fn dx_EnumFontName(NameBuffer: *mut u8, NameBufferNum: i32, JapanOnlyFlag: i32) -> i32;
-    pub fn dx_EnumFontNameEx(NameBuffer: *mut u8, NameBufferNum: i32, CharSet: i32) -> i32;
+    pub fn dx_EnumFontName(NameBuffer: *mut i8, NameBufferNum: i32, JapanOnlyFlag: i32) -> i32;
+    pub fn dx_EnumFontNameEx(NameBuffer: *mut i8, NameBufferNum: i32, CharSet: i32) -> i32;
     pub fn dx_EnumFontNameEx2(
-        NameBuffer: *mut u8,
+        NameBuffer: *mut i8,
         NameBufferNum: i32,
         EnumFontName: *const i8,
         CharSet: i32,
     ) -> i32;
     pub fn dx_EnumFontNameEx2WithStrLen(
-        NameBuffer: *mut u8,
+        NameBuffer: *mut i8,
         NameBufferNum: i32,
         EnumFontName: *const i8,
         EnumFontNameLength: usize,
@@ -4088,7 +4089,7 @@ extern "C" {
         FontHandle: i32,
     ) -> i32;
     pub fn dx_GetFontStateToHandle(
-        FontName: *mut u8,
+        FontName: *mut i8,
         Size: *mut i32,
         Thick: *mut i32,
         FontHandle: i32,
@@ -6014,13 +6015,13 @@ extern "C" {
     pub fn dx_GetBaseImageUseMaxPaletteNo(BaseImage: *const BaseImage) -> i32;
     pub fn dx_ReadJpegExif(
         JpegFilePath: *const i8,
-        ExifBuffer_Array: *mut u8,
+        ExifBuffer_Array: *mut i8,
         ExifBufferSize: usize,
     ) -> i32;
     pub fn dx_ReadJpegExifWithStrLen(
         JpegFilePath: *const i8,
         JpegFilePathLength: usize,
-        ExifBuffer_Array: *mut u8,
+        ExifBuffer_Array: *mut i8,
         ExifBufferSize: usize,
     ) -> i32;
     pub fn dx_SaveBaseImageToBmp(FilePath: *const i8, BaseImage: *const BaseImage) -> i32;
@@ -6575,38 +6576,38 @@ extern "C" {
     pub fn dx_SetNextPlay3DVelocitySoundMem(Velocity: Vector, SoundHandle: i32) -> i32;
     pub fn dx_GetMP3TagInfo(
         FileName: *const i8,
-        TitleBuffer: *mut u8,
+        TitleBuffer: *mut i8,
         TitleBufferBytes: usize,
-        ArtistBuffer: *mut u8,
+        ArtistBuffer: *mut i8,
         ArtistBufferBytes: usize,
-        AlbumBuffer: *mut u8,
+        AlbumBuffer: *mut i8,
         AlbumBufferBytes: usize,
-        YearBuffer: *mut u8,
+        YearBuffer: *mut i8,
         YearBufferBytes: usize,
-        CommentBuffer: *mut u8,
+        CommentBuffer: *mut i8,
         CommentBufferBytes: usize,
-        TrackBuffer: *mut u8,
+        TrackBuffer: *mut i8,
         TrackBufferBytes: usize,
-        GenreBuffer: *mut u8,
+        GenreBuffer: *mut i8,
         GenreBufferBytes: usize,
         PictureGrHandle: *mut i32,
     ) -> i32;
     pub fn dx_GetMP3TagInfoWithStrLen(
         FileName: *const i8,
         FileNameLength: usize,
-        TitleBuffer: *mut u8,
+        TitleBuffer: *mut i8,
         TitleBufferBytes: usize,
-        ArtistBuffer: *mut u8,
+        ArtistBuffer: *mut i8,
         ArtistBufferBytes: usize,
-        AlbumBuffer: *mut u8,
+        AlbumBuffer: *mut i8,
         AlbumBufferBytes: usize,
-        YearBuffer: *mut u8,
+        YearBuffer: *mut i8,
         YearBufferBytes: usize,
-        CommentBuffer: *mut u8,
+        CommentBuffer: *mut i8,
         CommentBufferBytes: usize,
-        TrackBuffer: *mut u8,
+        TrackBuffer: *mut i8,
         TrackBufferBytes: usize,
-        GenreBuffer: *mut u8,
+        GenreBuffer: *mut i8,
         GenreBufferBytes: usize,
         PictureGrHandle: *mut i32,
     ) -> i32;
@@ -6615,18 +6616,18 @@ extern "C" {
     pub fn dx_GetOggComment(
         FileName: *const i8,
         CommentIndex: i32,
-        CommentNameBuffer: *mut u8,
+        CommentNameBuffer: *mut i8,
         CommentNameBufferBytes: usize,
-        CommentBuffer: *mut u8,
+        CommentBuffer: *mut i8,
         CommentBufferBytes: usize,
     ) -> i32;
     pub fn dx_GetOggCommentWithStrLen(
         FileName: *const i8,
         FileNameLength: usize,
         CommentIndex: i32,
-        CommentNameBuffer: *mut u8,
+        CommentNameBuffer: *mut i8,
         CommentNameBufferBytes: usize,
-        CommentBuffer: *mut u8,
+        CommentBuffer: *mut i8,
         CommentBufferBytes: usize,
     ) -> i32;
     pub fn dx_SetCreateSoundDataType(SoundDataType: i32) -> i32;
@@ -7276,7 +7277,7 @@ extern "C" {
         ChildName: *const i8,
         ChildNameLength: usize,
     ) -> i32;
-    pub fn dx_MV1GetFrameName2(MHandle: i32, FrameIndex: i32, StrBuffer: *mut u8) -> i32;
+    pub fn dx_MV1GetFrameName2(MHandle: i32, FrameIndex: i32, StrBuffer: *mut i8) -> i32;
     pub fn dx_MV1GetFrameParent(MHandle: i32, FrameIndex: i32) -> i32;
     pub fn dx_MV1GetFrameChildNum(MHandle: i32, FrameIndex: i32) -> i32;
     pub fn dx_MV1GetFrameChild(MHandle: i32, FrameIndex: i32, ChildIndex: i32) -> i32;
@@ -7628,14 +7629,14 @@ extern "C" {
     pub fn dx__GetSystemInfo(DxLibVer: *mut i32, DirectXVer: *mut i32, WindowsVer: *mut i32)
         -> i32;
     pub fn dx_GetPcInfo(
-        OSString: *mut u8,
-        DirectXString: *mut u8,
-        CPUString: *mut u8,
+        OSString: *mut i8,
+        DirectXString: *mut i8,
+        CPUString: *mut i8,
         CPUSpeed: *mut i32,
         FreeMemorySize: *mut f64,
         TotalMemorySize: *mut f64,
-        VideoDriverFileName: *mut u8,
-        VideoDriverString: *mut u8,
+        VideoDriverFileName: *mut i8,
+        VideoDriverString: *mut i8,
         FreeVideoMemorySize: *mut f64,
         TotalVideoMemorySize: *mut f64,
     ) -> i32;
@@ -7732,7 +7733,7 @@ extern "C" {
     pub fn dx_SetWindows10_WM_CHAR_CancelTime(MilliSecond: i32) -> i32;
     pub fn dx_SetDragFileValidFlag(Flag: i32) -> i32;
     pub fn dx_DragFileInfoClear() -> i32;
-    pub fn dx_GetDragFilePath(FilePathBuffer: *mut u8) -> i32;
+    pub fn dx_GetDragFilePath(FilePathBuffer: *mut i8) -> i32;
     pub fn dx_GetDragFileNum() -> i32;
     pub fn dx_CreateRgnFromGraph(
         Width: i32,
@@ -7905,7 +7906,7 @@ extern "C" {
     pub fn dx_ClearMenuItemSelect() -> i32;
     pub fn dx_GetMenuItemID(ItemName: *const i8) -> i32;
     pub fn dx_GetMenuItemIDWithStrLen(ItemName: *const i8, ItemNameLength: usize) -> i32;
-    pub fn dx_GetMenuItemName(ItemID: i32, NameBuffer: *mut u8) -> i32;
+    pub fn dx_GetMenuItemName(ItemID: i32, NameBuffer: *mut i8) -> i32;
     pub fn dx_LoadMenuResource(MenuResourceID: i32) -> i32;
     pub fn dx_SetMenuItemSelectCallBackFunction(CallbackFunction: *mut libc::c_void) -> i32;
     pub fn dx_SetWindowMenu(MenuProc: *mut libc::c_void) -> i32;
@@ -7928,8 +7929,8 @@ extern "C" {
     ) -> i32;
     pub fn dx_GetJoypadName(
         InputType: i32,
-        InstanceNameBuffer: *mut u8,
-        ProductNameBuffer: *mut u8,
+        InstanceNameBuffer: *mut i8,
+        ProductNameBuffer: *mut i8,
     ) -> i32;
     pub fn dx_ConvertKeyCodeToVirtualKey(KeyCode: i32) -> i32;
     pub fn dx_ConvertVirtualKeyToKeyCode(VirtualKey: i32) -> i32;
@@ -8035,7 +8036,7 @@ extern "C" {
     pub fn dx_SetUseGDIFlag(Flag: i32) -> i32;
     pub fn dx_GetUseGDIFlag() -> i32;
     pub fn dx_SetDDrawUseGuid(Guid: *const GUID) -> i32;
-    pub fn dx_GetDirectDrawDeviceDescription(Number: i32, StringBuffer: *mut u8) -> i32;
+    pub fn dx_GetDirectDrawDeviceDescription(Number: i32, StringBuffer: *mut i8) -> i32;
     pub fn dx_GetDirectDrawDeviceNum() -> i32;
     pub fn dx_SetDrawScreen_ID3D11RenderTargetView(
         pID3D11RenderTargetView: *const libc::c_void,

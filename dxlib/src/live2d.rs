@@ -8,7 +8,7 @@ use std::{collections::BTreeMap, ffi::CString, path::Path, time::Duration};
 
 use crate::{
     error::{DxLibError, I32CodeExt, Result},
-    math::Vector2,
+    vector::Vector2,
 };
 
 pub struct Live2DRenderer<'model> {
@@ -52,7 +52,6 @@ pub struct Live2DModel {
 impl Live2DModel {
     pub fn load<P: AsRef<Path>>(path: P) -> Result<Live2DModel> {
         let path = CString::new(path.as_ref().to_str().ok_or(DxLibError::InvalidPath)?)?;
-        println!("{:?}", path);
         let handle = unsafe { dx_Live2D_LoadModel(path.as_ptr()).ensure_not_minus1()? };
         Ok(Live2DModel { handle })
     }
