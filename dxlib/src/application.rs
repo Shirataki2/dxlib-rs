@@ -1,4 +1,7 @@
-use crate::error::{DxLibError, Result};
+use crate::{
+    error::{DxLibError, Result},
+    screen::Screen,
+};
 use dxlib_sys::*;
 
 const DEFAULT_WIDTH: usize = 1280;
@@ -29,6 +32,7 @@ pub struct Application {
     color_depth: ColorBitDepth,
     refresh_rate: i32,
     screen_mode: ScreenMode,
+    pub screen: Screen,
 }
 
 impl Application {
@@ -37,20 +41,20 @@ impl Application {
     }
 
     pub fn process_message(&self) -> Result<()> {
-        let code = unsafe { dx_ProcessMessage()? };
+        let code = unsafe { dx_ProcessMessage() };
         if code != 0 {
             return Err(DxLibError::MessageProcessingFailed);
         }
         return Ok(());
     }
 
-    pub fn run<F: FnOnce(Application) -> Result<()>>(&self, f: F) -> Result<()> {
-        f(self.clone())?;
+    pub fn run<F: FnOnce(&Application) -> Result<()>>(&self, f: F) -> Result<()> {
+        f(self)?;
         Ok(())
     }
 
     fn close(&self) -> Result<i32> {
-        let code = unsafe { dx_DxLib_End()? };
+        let code = unsafe { dx_DxLib_End() };
         Ok(code)
     }
 }
@@ -105,21 +109,23 @@ impl ApplicationBuilder {
                 height as i32,
                 color_depth as i32,
                 refresh_rate,
-            )?
+            )
         };
         if code != 0 {
             return Err(DxLibError::NonZeroReturned);
         }
 
-        let code = unsafe { dx_ChangeWindowMode(screen_mode as i32)? };
+        let code = unsafe { dx_ChangeWindowMode(screen_mode as i32) };
         if code != 0 {
             return Err(DxLibError::NonZeroReturned);
         }
 
-        let code = unsafe { dx_DxLib_Init()? };
+        let code = unsafe { dx_DxLib_Init() };
         if code != 0 {
             return Err(DxLibError::InitializeFailed);
         }
+
+        let screen = Screen::default();
 
         Ok(Application {
             width,
@@ -127,6 +133,7 @@ impl ApplicationBuilder {
             color_depth,
             refresh_rate,
             screen_mode,
+            screen,
         })
     }
 }
@@ -139,9 +146,9 @@ fn test_simple_app() {
         .unwrap()
         .run(|app| {
             unsafe {
-                dx_LoadGraphScreen(0, 0, "lena.png\0".as_ptr(), 0).unwrap();
+                dx_LoadGraphScreen(0, 0, "lena.png\0".as_ptr() as *const i8, 0);
 
-                while dx_CheckHitKeyAll(7).unwrap() == 0 {
+                while dx_CheckHitKeyAll(7) == 0 {
                     app.process_message().unwrap();
                 }
             };
