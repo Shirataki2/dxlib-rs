@@ -108,15 +108,15 @@ pub struct FileInfo {
 
 #[repr(C)]
 pub struct StreamDataShredType2 {
-    pub open: fn(*mut u8, i32, i32, i32) -> u32,
-    pub close: fn(u32) -> i32,
+    pub open: extern "C" fn(*mut u8, i32, i32, i32) -> u32,
+    pub close: extern "C" fn(u32) -> i32,
     // TODO: 残りを埋める
 }
 
 #[repr(C)]
 pub struct StreamDataShredType2W {
-    pub open: fn(*mut u8, i32, i32, i32) -> u32,
-    pub close: fn(u32) -> i32,
+    pub open: extern "C" fn(*mut u8, i32, i32, i32) -> u32,
+    pub close: extern "C" fn(u32) -> i32,
     // TODO: 残りを埋める
 }
 
@@ -471,7 +471,7 @@ pub struct HitResultLineDouble {
 
 #[repr(C)]
 pub struct StreamDataShred {
-    pub tell: fn(u32) -> i64,
+    pub tell: extern "C" fn(u32) -> i64,
     // TODO: 残りを埋める
 }
 

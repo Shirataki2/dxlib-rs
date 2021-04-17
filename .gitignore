@@ -1,4 +1,6 @@
 target
 *.dll
+*.lib
 lena.png
 Log.txt
+**/examples/resources

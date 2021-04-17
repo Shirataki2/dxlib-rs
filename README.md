@@ -1,8 +1,8 @@
 # Rust DxLib
 
-DXライブラリのDLLを叩いてRust上で動かします．
+DXライブラリのRust FFIです．
 
-`dxlib-sys`がDLLとのグルーコードです．全API関数に対して愚直な型で呼び出すだけの低レベルなAPIを提供します．
+`dxlib-sys`がグルーコードです．全API関数に対して愚直に呼び出すだけの低レベルなAPIを提供します．
 
 `dxlib`は上記のcrateをもとにRustで扱いやすいように型を定義しなおしたものです．
 
@@ -10,35 +10,51 @@ DXライブラリのDLLを叩いてRust上で動かします．
 
 ## `dxlib-sys`を利用する場合
 
+Live2Dモデルをロードし，ランダムにアニメーションするスクリプトの例です．
+
 ```rust
 use dxlib_sys::*;
 use std::{process::exit, ptr};
 
-// "テスト\0"のshift-jis形式
-const INIT_TITLE: &'static [u8] = &[ 0x83, 0x65, 0x83, 0x58, 0x83, 0x67, 0x00 ];
-
 fn main() -> anyhow::Result<()> {
     unsafe {
-        dx_ChangeWindowMode(TRUE)?;        
-        dx_SetGraphMode(640, 480, 32, 60)?;
-        dx_SetMainWindowText(INIT_TITLE.as_ptr())?;
+        dx_ChangeWindowMode(TRUE);
+        dx_SetGraphMode(380, 720, 32, 60);
 
-        if dx_DxLib_Init()? != 0 {
+        dx_Live2D_SetCubism4CoreDLLPath("Live2DCubismCore.dll\0".as_ptr() as *const i8);
+
+        if dx_DxLib_Init() != 0 {
             exit(1);
         }
-        
-        let handle = dx_LoadGraph("lena.png".as_ptr(), FALSE)?;
 
-        while dx_ProcessMessage()? == 0 {
-            dx_ClearDrawScreen(ptr::null())?;
-            dx_SetDrawScreen(DX_SCREEN_BACK)?;
+        let model = dx_Live2D_LoadModel(
+            "./examples/resources/Hiyori/Hiyori.model3.json\0".as_ptr() as *const i8,
+        );
 
-            dx_DrawGraph(0, 0, handle, 0)?;
+        dx_Live2D_Model_SetExtendRate(model, 4.0, 4.0);
+        dx_Live2D_Model_SetTranslate(model, 0.0, 0.0);
 
-            dx_ScreenFlip()?;
+        dx_SetDrawScreen(DX_SCREEN_BACK);
+
+        while dx_ProcessMessage() == 0 {
+            dx_ClearDrawScreen(ptr::null());
+
+            if dx_Live2D_Model_IsMotionFinished(model) == 1 {
+                dx_Live2D_Model_StartMotion(model, "Idle\0".as_ptr() as *const i8, dx_GetRand(8));
+            }
+
+            dx_Live2D_Model_Update(model, 1.0 / 60.0);
+
+            dx_Live2D_RenderBegin();
+
+            dx_Live2D_Model_Draw(model);
+
+            dx_Live2D_RenderEnd();
+
+            dx_ScreenFlip();
         }
-
-        dx_DxLib_End()?;
+        dx_Live2D_DeleteModel(model);
+        dx_DxLib_End();
     }
     Ok(())
 }
@@ -46,25 +62,39 @@ fn main() -> anyhow::Result<()> {
 
 ## `dxlib`を利用する場合(作成中)
 
-展望としては以下のコードのunsafeの個所をすべてラッピングすることです．
-
 ```rust
-use dxlib_sys::*;
-use dxlib::application::Application;
+use std::time::Duration;
 
-fn main() -> anyhow::Result<()>{
-    Application::builder()
-        .screen_size(600, 600)
-        .build()?
-        .run(|app| {
-            unsafe {
-                dx_LoadGraphScreen(0, 0, "lena.png\0".as_ptr(), 0).unwrap();
+use dxlib::{
+    application::Application,
+    live2d::{Live2DModel, Live2DRenderer},
+    math::Vector2,
+    screen::DrawScreen,
+};
+use rand::{thread_rng, Rng};
 
-                while dx_CheckHitKeyAll(7).unwrap() == 0 {
-                    app.process_message().unwrap();
-                }
-            };
-            Ok(())
-        })?;
+fn main() -> anyhow::Result<()> {
+    let mut app = Application::builder().screen_size(380, 740).build()?;
+
+    let mut rng = thread_rng();
+
+    let mut renderer = Live2DRenderer::new("Live2DCubismCore.dll")?;
+    let model = Live2DModel::load("./examples/resources/Hiyori/Hiyori.model3.json")?;
+    renderer.add_model(&model)?;
+    model.scale(Vector2::from(&[4.0, 4.0]))?;
+
+    app.screen.set_draw_screen(DrawScreen::Back)?;
+
+    while app.process_message().is_ok() {
+        app.screen.clear()?;
+        if model.is_motion_finished()? {
+            model.start_motion("Idle", rng.gen_range(0..8))?;
+        }
+        model.update(Duration::from_millis(25))?;
+        renderer.render()?;
+        app.screen.flip()?;
+    }
+
+    Ok(())
 }
 ```
