@@ -1,10 +1,13 @@
-use dxlib_sys::{consts::*, dx_MV1DeleteModel, dx_MV1DrawFrame, dx_MV1DrawMesh, dx_MV1DrawModel, dx_MV1DrawTriangleList, dx_MV1LoadModel, dx_MV1SetLoadModelUsePhysicsMode, dx_MV1SetPosition};
+use dxlib_sys::{
+    consts::*, dx_MV1DeleteModel, dx_MV1DrawFrame, dx_MV1DrawMesh, dx_MV1DrawModel,
+    dx_MV1DrawTriangleList, dx_MV1LoadModel, dx_MV1SetLoadModelUsePhysicsMode, dx_MV1SetPosition,
+};
 use std::path::Path;
 
 use crate::{
     error::{I32CodeExt, Result},
     math::vector::Vector3,
-    utils::path_to_cstring,
+    utils::to_sjis_cstring,
 };
 
 #[repr(i32)]
@@ -16,21 +19,26 @@ pub enum PhysicsMode {
 
 #[derive(Debug)]
 pub struct Mv1Model {
-    handle: i32,
+    pub handle: i32,
     pos: Vector3<f32>,
 }
 
 impl Mv1Model {
     pub fn load<P: AsRef<Path>>(path: P) -> Result<Mv1Model> {
-        let path = path_to_cstring(&path)?;
-        let handle = unsafe { dx_MV1LoadModel(path.as_ptr()).ensure_not_minus1()? };
+        let path = to_sjis_cstring(&path.as_ref().to_string_lossy());
+        let path = path.as_ptr() as *const i8;
+        let handle = unsafe { dx_MV1LoadModel(path).ensure_not_minus1()? };
         let pos = Vector3::default();
-        unsafe { dx_MV1SetLoadModelUsePhysicsMode(PhysicsMode::Disable as i32).ensure_not_minus1()?; }
+        unsafe {
+            dx_MV1SetLoadModelUsePhysicsMode(PhysicsMode::Disable as i32).ensure_not_minus1()?;
+        }
         Ok(Mv1Model { handle, pos })
     }
 
     pub fn load_with_physics<P: AsRef<Path>>(path: P, mode: PhysicsMode) -> Result<Mv1Model> {
-        unsafe { dx_MV1SetLoadModelUsePhysicsMode(mode as i32).ensure_not_minus1()?; }
+        unsafe {
+            dx_MV1SetLoadModelUsePhysicsMode(mode as i32).ensure_not_minus1()?;
+        }
         Self::load(path)
     }
 

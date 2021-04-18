@@ -1,6 +1,12 @@
 use std::ffi::CString;
 
-use crate::{error::{DxLibError, Result, I32CodeExt}, math::vector::Vector4, plugin::Plugin, screen::Screen};
+use crate::{
+    error::{DxLibError, I32CodeExt, Result},
+    math::vector::Vector4,
+    plugin::Plugin,
+    screen::Screen,
+    utils::to_sjis_cstring,
+};
 use dxlib_sys::*;
 
 const DEFAULT_WIDTH: usize = 1280;
@@ -53,9 +59,25 @@ impl Application {
     }
 
     pub fn screenshot(&self, rect: Option<Vector4<i32>>, name: &str) -> Result<()> {
-        let rect = rect.map_or(Vector4::from([0, 0, self.width as i32, self.height as i32]), |f| f);
+        let rect = rect.map_or(
+            Vector4::from([0, 0, self.width as i32, self.height as i32]),
+            |f| f,
+        );
         let name = CString::new(name)?;
-        unsafe { dx_SaveDrawScreen(rect[0], rect[1], rect[2], rect[3], name.as_ptr(), DX_IMAGESAVETYPE_BMP, 80, 1, -1).ensure_zero() }
+        unsafe {
+            dx_SaveDrawScreen(
+                rect[0],
+                rect[1],
+                rect[2],
+                rect[3],
+                name.as_ptr(),
+                DX_IMAGESAVETYPE_BMP,
+                80,
+                1,
+                -1,
+            )
+            .ensure_zero()
+        }
     }
 
     fn close(&self) -> Result<i32> {
@@ -77,6 +99,7 @@ pub struct ApplicationBuilder {
     color_depth: Option<ColorBitDepth>,
     refresh_rate: Option<i32>,
     screen_mode: Option<ScreenMode>,
+    title: Option<String>,
 }
 
 impl ApplicationBuilder {
@@ -101,6 +124,11 @@ impl ApplicationBuilder {
         self
     }
 
+    pub fn title(&mut self, title: &str) -> &mut Self {
+        self.title = Some(title.to_string());
+        self
+    }
+
     pub fn add_plugin<P: Plugin>(&mut self, plugin: P) -> &mut Self {
         plugin.build(self);
         self
@@ -112,6 +140,15 @@ impl ApplicationBuilder {
         let color_depth = self.color_depth.unwrap_or_default();
         let refresh_rate = self.refresh_rate.unwrap_or(60);
         let screen_mode = self.screen_mode.unwrap_or(ScreenMode::Windowed);
+
+        let _: Option<()> = self.title.clone().and_then(|title| {
+            let title = to_sjis_cstring(&title);
+            let title = title.as_ptr() as *const i8;
+            unsafe {
+                dx_SetWindowText(title);
+            }
+            None
+        });
 
         let code = unsafe {
             dx_SetGraphMode(

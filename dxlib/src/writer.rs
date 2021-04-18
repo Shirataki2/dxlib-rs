@@ -17,6 +17,7 @@ impl DebugWriter {
 impl fmt::Write for DebugWriter {
     fn write_str(&mut self, s: &str) -> Result<(), Error> {
         let s = to_sjis_cstring(s);
+        let s = s.as_ptr() as *const i8;
         let result = unsafe { dx_printfDx(s).ensure_zero() };
         if result.is_err() {
             return Err(Error::default());
