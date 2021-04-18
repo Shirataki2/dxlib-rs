@@ -3,8 +3,8 @@ use std::time::Duration;
 use dxlib::{
     application::Application,
     live2d::{Live2DModel, Live2DRenderer},
+    math::vector::Vector2,
     screen::DrawScreen,
-    vector::Vector2,
 };
 use rand::{thread_rng, Rng};
 

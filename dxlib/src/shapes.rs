@@ -6,7 +6,7 @@ use dxlib_sys::{
 use crate::{
     color::Color,
     error::{I32CodeExt, Result},
-    vector::Vector2,
+    math::vector::Vector2,
 };
 
 pub enum Shape {

@@ -1,6 +1,6 @@
 use dxlib_sys::dx_GetColor;
 
-use crate::vector::{Vector3, Vector4};
+use crate::math::vector::{Vector3, Vector4};
 
 pub trait ColorElement: Sized + Clone + Copy {
     fn min() -> Self;

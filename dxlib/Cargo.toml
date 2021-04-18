@@ -5,6 +5,9 @@ authors = ["Tomoya Ishii <tmy1997530@gmail.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[features]
+default = []
+unstable = []
 
 [dependencies]
 dxlib-sys = { path = "../dxlib-sys" }

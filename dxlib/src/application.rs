@@ -1,7 +1,6 @@
-use crate::{
-    error::{DxLibError, Result},
-    screen::Screen,
-};
+use std::ffi::CString;
+
+use crate::{error::{DxLibError, Result, I32CodeExt}, math::vector::Vector4, plugin::Plugin, screen::Screen};
 use dxlib_sys::*;
 
 const DEFAULT_WIDTH: usize = 1280;
@@ -25,7 +24,7 @@ impl Default for ColorBitDepth {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Application {
     width: usize,
     height: usize,
@@ -51,6 +50,12 @@ impl Application {
     pub fn run<F: FnOnce(&Application) -> Result<()>>(&self, f: F) -> Result<()> {
         f(self)?;
         Ok(())
+    }
+
+    pub fn screenshot(&self, rect: Option<Vector4<i32>>, name: &str) -> Result<()> {
+        let rect = rect.map_or(Vector4::from([0, 0, self.width as i32, self.height as i32]), |f| f);
+        let name = CString::new(name)?;
+        unsafe { dx_SaveDrawScreen(rect[0], rect[1], rect[2], rect[3], name.as_ptr(), DX_IMAGESAVETYPE_BMP, 80, 1, -1).ensure_zero() }
     }
 
     fn close(&self) -> Result<i32> {
@@ -96,6 +101,11 @@ impl ApplicationBuilder {
         self
     }
 
+    pub fn add_plugin<P: Plugin>(&mut self, plugin: P) -> &mut Self {
+        plugin.build(self);
+        self
+    }
+
     pub fn build(&mut self) -> Result<Application> {
         let width = self.width.unwrap_or(DEFAULT_WIDTH);
         let height = self.height.unwrap_or(DEFAULT_HEIGHT);
@@ -136,23 +146,4 @@ impl ApplicationBuilder {
             screen,
         })
     }
-}
-
-#[test]
-fn test_simple_app() {
-    Application::builder()
-        .screen_size(600, 600)
-        .build()
-        .unwrap()
-        .run(|app| {
-            unsafe {
-                dx_LoadGraphScreen(0, 0, "lena.png\0".as_ptr() as *const i8, 0);
-
-                while dx_CheckHitKeyAll(7) == 0 {
-                    app.process_message().unwrap();
-                }
-            };
-            Ok(())
-        })
-        .unwrap();
 }

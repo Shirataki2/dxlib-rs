@@ -1,14 +1,13 @@
+#[cfg(feature = "unstable")]
+use num_traits::Num;
 use num_traits::{One, Zero};
-use std::{ops::*};
+#[cfg(feature = "unstable")]
+use std::mem;
+use std::ops::*;
 
-use crate::vector::Vector;
+use super::{vector::Vector, DotProduct};
 
 pub type SqMatrix<T, const DIM: usize> = Matrix<T, DIM, DIM>;
-
-pub trait DotProduct<T> {
-    type Output;
-    fn dot(&self, other: T) -> Self::Output;
-}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Matrix<T, const ROW: usize, const COL: usize>([[T; COL]; ROW]);
@@ -19,7 +18,7 @@ where
     T: Zero + Copy + AddAssign + Add<Output = T> + Mul<Output = T>,
 {
     type Output = Matrix<T, A, C>;
-    fn dot(&self, other: Matrix<T, B, C>) -> Matrix<T, A, C> {
+    fn dot(self, other: Matrix<T, B, C>) -> Matrix<T, A, C> {
         let mut v = Matrix::zero();
         for a in 0..A {
             for c in 0..C {
@@ -39,7 +38,7 @@ where
     T: Zero + Copy + AddAssign + Add<Output = T> + Mul<Output = T>,
 {
     type Output = Vector<T, ROW>;
-    fn dot(&self, other: Vector<T, COL>) -> Vector<T, ROW> {
+    fn dot(self, other: Vector<T, COL>) -> Vector<T, ROW> {
         let mut v = Vector::zero();
         for a in 0..ROW {
             let mut cell = T::zero();
@@ -52,9 +51,67 @@ where
     }
 }
 
+#[cfg(feature = "unstable")]
+impl<T, const ROW: usize, const COL: usize> Matrix<T, ROW, COL> {
+    pub fn flatten(self) -> Vector<T, { ROW * COL }> {
+        let v = unsafe { mem::transmute_copy(&self) };
+        v
+    }
+}
+
+impl<T, const DIM: usize> SqMatrix<T, DIM>
+where
+    T: Zero + Copy + AddAssign + Add<Output = T> + One + MulAssign + Mul<Output = T>,
+{
+    pub fn eye() -> Self {
+        let mut v = Self::zero();
+        for i in 0..DIM {
+            v[i][i] = T::one();
+        }
+        v
+    }
+}
+
+impl<T, const DIM: usize> SqMatrix<T, DIM>
+where
+    T: Zero + Copy + AddAssign + Add<Output = T>,
+{
+    pub fn diag(self) -> Vector<T, DIM> {
+        let mut v = Vector::zero();
+        for i in 0..DIM {
+            v[i] = self[i][i];
+        }
+        v
+    }
+}
+
+// #[cfg(feature = "lapack")]
+impl<T, const DIM: usize> SqMatrix<T, DIM>
+where
+    T: Zero
+        + Copy
+        + AddAssign
+        + Add<Output = T>
+        + One
+        + MulAssign
+        + Mul<Output = T>
+        + Div<Output = T>
+        + Sub<Output = T>,
+{
+    pub fn det(self) -> T {
+        let (_l, u) = self.lu_decompose();
+        let u = u.diag();
+        let mut v = T::one();
+        for i in 0..DIM {
+            v *= u[i];
+        }
+        v
+    }
+}
+
 impl<T, const ROW: usize, const COL: usize> Matrix<T, ROW, COL>
 where
-    T: Zero + Copy + AddAssign + Add<Output=T>
+    T: Zero + Copy + AddAssign + Add<Output = T>,
 {
     pub fn transpose(&self) -> Matrix<T, COL, ROW> {
         let mut v = Matrix::zero();
@@ -67,6 +124,25 @@ where
     }
 }
 
+#[cfg(feature = "unstable")]
+impl<T, const ROW: usize, const COL: usize> From<[T; COL * ROW]> for Matrix<T, ROW, COL>
+where
+    T: Copy + Num,
+{
+    fn from(v: [T; COL * ROW]) -> Self {
+        Self(unsafe { mem::transmute_copy(&v) })
+    }
+}
+
+#[cfg(feature = "unstable")]
+impl<T, const ROW: usize, const COL: usize> From<Vector<T, { COL * ROW }>> for Matrix<T, ROW, COL>
+where
+    T: Copy + Num,
+{
+    fn from(v: Vector<T, { COL * ROW }>) -> Self {
+        Self(unsafe { mem::transmute_copy(&v) })
+    }
+}
 
 impl<T, const ROW: usize, const COL: usize> From<[[T; COL]; ROW]> for Matrix<T, ROW, COL>
 where
@@ -365,18 +441,57 @@ impl<T: RemAssign + Rem<Output = T> + Clone, const ROW: usize, const COL: usize>
     }
 }
 
+impl<T, const DIM: usize> SqMatrix<T, DIM>
+where
+    T: Zero
+        + Copy
+        + AddAssign
+        + Add<Output = T>
+        + One
+        + MulAssign
+        + Mul<Output = T>
+        + Div<Output = T>
+        + Sub<Output = T>,
+{
+    fn lu_decompose(self) -> (Self, Self) {
+        let mut v = self.clone();
+        for i in 0..DIM - 1 {
+            for j in i + 1..DIM {
+                let s = v[j][i] / v[i][i];
+                v[j][i] = s;
+                for k in i + 1..DIM {
+                    v[j][k] = v[j][k] - v[i][k] * s;
+                }
+            }
+        }
+        let mut l = Self::zero();
+        for i in 0..DIM {
+            l[i][i] = T::one();
+            for j in 0..i {
+                l[i][j] = v[i][j];
+            }
+        }
+        let mut u = Self::zero();
+        for i in 0..DIM {
+            for j in i..DIM {
+                u[i][j] = v[i][j];
+            }
+        }
+        (l, u)
+    }
+}
+
 pub struct T;
 
 impl<U, const ROW: usize, const COL: usize> BitXor<T> for Matrix<U, ROW, COL>
 where
-    U: Zero + Copy + AddAssign + Add<Output=U>
+    U: Zero + Copy + AddAssign + Add<Output = U>,
 {
     type Output = Matrix<U, COL, ROW>;
     fn bitxor(self, _: T) -> Matrix<U, COL, ROW> {
         self.transpose()
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -388,12 +503,28 @@ mod tests {
         let m2 = Matrix::from([[5, 6], [7, 8]]);
         assert_eq!(m1.dot(m2), Matrix::from([[19, 22], [43, 50]]));
     }
-    
+
     #[test]
     fn test_transpose() {
         let m = Matrix::from([[1, 2, 3, 4], [5, 6, 7, 8]]);
         let t = Matrix::from([[1, 5], [2, 6], [3, 7], [4, 8]]);
         assert_eq!(m.transpose(), t);
         assert_eq!(m ^ T, t);
+    }
+
+    #[test]
+    #[cfg(feature = "unstable")]
+    fn test_flatten() {
+        let m = Matrix::from([[1, 2, 3, 4], [5, 6, 7, 8]]);
+        let v = Vector::from([1, 2, 3, 4, 5, 6, 7, 8]);
+        let t = Matrix::from([[1, 2], [3, 4], [5, 6], [7, 8]]);
+        assert_eq!(m.flatten(), v);
+        assert_eq!(Matrix::<i32, 4, 2>::from(v), t);
+    }
+
+    #[test]
+    fn test_det() {
+        let v = Matrix::from([[-1.0, 2.0, 3.0], [4.0, -2.0, 1.0], [1.0, 4.0, 5.0]]);
+        assert_eq!(v.det(), 30.0);
     }
 }

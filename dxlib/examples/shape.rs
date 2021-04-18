@@ -1,4 +1,4 @@
-use dxlib::{application::Application, color::Color, shapes::*, vector::Vector2};
+use dxlib::{application::Application, color::Color, math::vector::Vector2, shapes::*};
 
 fn main() -> anyhow::Result<()> {
     let _app = Application::builder().screen_size(640, 480).build()?;

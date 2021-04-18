@@ -1,3 +1,4 @@
+use super::DotProduct;
 use num_traits::{Float, One, Zero};
 use std::ops::*;
 
@@ -6,20 +7,26 @@ pub type Vector3<T> = Vector<T, 3>;
 pub type Vector4<T> = Vector<T, 4>;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct Vector<T, const DIM: usize>([T; DIM]);
+pub struct Vector<T, const DIM: usize>(pub(crate) [T; DIM]);
 
-impl<T, const DIM: usize> Vector<T, DIM>
+impl<T, const DIM: usize> DotProduct<Vector<T, DIM>> for Vector<T, DIM>
 where
     T: Zero + Mul<Output = T> + AddAssign + Copy,
 {
-    pub fn dot(self, rhs: Vector<T, DIM>) -> T {
+    type Output = T;
+    fn dot(self, rhs: Vector<T, DIM>) -> T {
         let mut ret = T::zero();
         for i in 0..DIM {
             ret += self[i] * rhs[i];
         }
         ret
     }
+}
 
+impl<T, const DIM: usize> Vector<T, DIM>
+where
+    T: Zero + Mul<Output = T> + AddAssign + Copy,
+{
     pub fn sq_magnitude(self) -> T {
         self.dot(self)
     }
@@ -326,6 +333,18 @@ impl<T: Neg<Output = T> + Clone, const DIM: usize> Neg for Vector<T, DIM> {
             v[i] = -v[i].clone();
         }
         v
+    }
+}
+
+use dxlib_sys::data::Vector as DxVector;
+
+impl From<Vector3<f32>> for DxVector {
+    fn from(v: Vector3<f32>) -> DxVector {
+        DxVector {
+            x: v[0],
+            y: v[1],
+            z: v[2],
+        }
     }
 }
 

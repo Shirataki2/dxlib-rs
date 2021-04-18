@@ -8,7 +8,7 @@ use std::{collections::BTreeMap, ffi::CString, path::Path, time::Duration};
 
 use crate::{
     error::{DxLibError, I32CodeExt, Result},
-    vector::Vector2,
+    math::vector::Vector2,
 };
 
 pub struct Live2DRenderer<'model> {
