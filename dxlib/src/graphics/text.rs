@@ -1,5 +1,5 @@
 use crate::{error::{Result, I32CodeExt}, color::Color, math::vector::Vector2, utils::to_sjis_bytes};
-use dxlib_sys::{consts::*, dx_CreateFontToHandle, dx_DrawString, dx_DrawStringToHandle};
+use dxlib_sys::{consts::*, dx_CreateFontToHandle, dx_DeleteFontToHandle, dx_DrawString, dx_DrawStringToHandle};
 use smart_default::SmartDefault;
 
 #[derive(Debug, Clone, SmartDefault)]
@@ -116,6 +116,18 @@ pub struct Font {
 impl Font {
     pub fn builder() -> FontBuilder {
         FontBuilder::default()
+    }
+
+    fn close(&self) -> Result<()> {
+        unsafe {
+            dx_DeleteFontToHandle(self.handle).ensure_zero()
+        }
+    }
+}
+
+impl Drop for Font {
+    fn drop(&mut self) {
+        let _ = self.close();
     }
 }
 

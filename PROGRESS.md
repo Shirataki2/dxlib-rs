@@ -64,24 +64,24 @@
 |GraphBlendBlt||
 |GraphBlendRectBlt||
 |文字描画関係関数||
-|DrawString||
-|DrawFormatString||
+|DrawString|〇|
+|DrawFormatString| - |
 |GetDrawStringWidth||
 |GetDrawFormatStringWidth||
-|SetFontSize||
-|SetFontThickness||
-|ChangeFont||
-|ChangeFontType||
-|CreateFontToHandle||
+|SetFontSize| - |
+|SetFontThickness| - |
+|ChangeFont| - |
+|ChangeFontType| - |
+|CreateFontToHandle|〇|
 |LoadFontDataToHandle||
-|DeleteFontToHandle||
+|DeleteFontToHandle|〇|
 |SetFontCacheUsePremulAlphaFlag||
-|DrawStringToHandle||
-|DrawFormatStringToHandle||
+|DrawStringToHandle|〇|
+|DrawFormatStringToHandle| - |
 |GetDrawStringWidthToHandle||
 |GetDrawFormatStringWidthToHandle||
-|GetFontStateToHandle||
-|InitFontToHandle||
+|GetFontStateToHandle| - |
+|InitFontToHandle| - |
 |簡易画面出力関数||
 |printfDx|〇|
 |clsDx|〇|
@@ -220,7 +220,7 @@
 |SRand| - |
 |ウインドウモード関係||
 |ChangeWindowMode|〇|
-|SetMainWindowText||
+|SetMainWindowText|〇|
 |SetWindowIconID||
 |SetWindowSizeChangeEnableFlag||
 |SetWindowSizeExtendRate||
@@ -244,16 +244,16 @@
 |NetWorkRecvUDP||
 |CheckNetWorkRecvUDP||
 |ファイル読み込み関係||
-|FileRead_open||
-|FileRead_size||
-|FileRead_close||
-|FileRead_tell||
-|FileRead_seek||
-|FileRead_read||
-|FileRead_eof||
-|FileRead_gets||
-|FileRead_getc||
-|FileRead_scanf||
+|FileRead_open| - |
+|FileRead_size| - |
+|FileRead_close| - |
+|FileRead_tell| - |
+|FileRead_seek| - |
+|FileRead_read| - |
+|FileRead_eof| - |
+|FileRead_gets| - |
+|FileRead_getc| - |
+|FileRead_scanf| - |
 |ドット単位で画像にアクセスしたい関係||
 |LoadSoftImage||
 |LoadARGB8ColorSoftImage||
