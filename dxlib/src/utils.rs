@@ -3,7 +3,7 @@ use dxlib_sys::ffi::dx_WaitKey;
 use encoding_rs::SHIFT_JIS;
 use std::{ffi::CString, path::Path};
 
-pub fn to_sjis_cstring(s: &str) -> Vec<u8> {
+pub fn to_sjis_bytes(s: &str) -> Vec<u8> {
     let s = format!("{}\0", s);
     let (bytes, _, _) = SHIFT_JIS.encode(&s);
     let bytes = bytes.to_vec();

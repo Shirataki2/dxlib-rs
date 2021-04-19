@@ -119,43 +119,40 @@ impl From<Color<f32>> for Color<u8> {
     }
 }
 
-#[test]
-fn color_create() {
-    let v = [0, 255, 0];
-    let c = Color::from(&v);
-    println!("{:?}", c);
-}
-
-impl Color<u8> {
-    pub fn black() -> Color<u8> {
-        Self::new(0, 0, 0, 255)
+impl<T: ColorElement>  Color<T> {
+    pub fn transparent() -> Color<T> {
+        Self::new(T::min(), T::min(), T::min(), T::min())
     }
 
-    pub fn white() -> Color<u8> {
-        Self::new(255, 255, 255, 255)
+    pub fn black() -> Color<T> {
+        Self::new(T::min(), T::min(), T::min(), T::max())
     }
 
-    pub fn red() -> Color<u8> {
-        Self::new(255, 0, 0, 255)
+    pub fn white() -> Color<T> {
+        Self::new(T::max(), T::max(), T::max(), T::max())
     }
 
-    pub fn green() -> Color<u8> {
-        Self::new(0, 255, 0, 255)
+    pub fn red() -> Color<T> {
+        Self::new(T::max(), T::min(), T::min(), T::max())
     }
 
-    pub fn blue() -> Color<u8> {
-        Self::new(0, 0, 255, 255)
+    pub fn green() -> Color<T> {
+        Self::new(T::min(), T::max(), T::min(), T::max())
     }
 
-    pub fn magenta() -> Color<u8> {
-        Self::new(255, 0, 255, 255)
+    pub fn blue() -> Color<T> {
+        Self::new(T::min(), T::min(), T::max(), T::max())
     }
 
-    pub fn cyan() -> Color<u8> {
-        Self::new(0, 255, 255, 255)
+    pub fn magenta() -> Color<T> {
+        Self::new(T::max(), T::min(), T::max(), T::max())
     }
 
-    pub fn yellow() -> Color<u8> {
-        Self::new(255, 255, 0, 255)
+    pub fn cyan() -> Color<T> {
+        Self::new(T::min(), T::max(), T::max(), T::max())
+    }
+
+    pub fn yellow() -> Color<T> {
+        Self::new(T::max(), T::max(), T::min(), T::max())
     }
 }

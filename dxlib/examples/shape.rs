@@ -1,4 +1,4 @@
-use dxlib::{application::Application, color::Color, math::vector::Vector2, shapes::*};
+use dxlib::prelude::*;
 
 fn main() -> anyhow::Result<()> {
     let _app = Application::builder().screen_size(640, 480).build()?;
@@ -19,17 +19,15 @@ fn main() -> anyhow::Result<()> {
     }
     .draw()?;
 
-    Rect {
-        left_top: Vector2::from([100, 100]),
-        right_bottom: Vector2::from([540, 320]),
+    RectAntiAlias {
+        left_top: Vector2::from([100.0, 100.0]),
+        right_bottom: Vector2::from([540.0, 320.0]),
         color: Color::white(),
         ..Default::default()
     }
     .draw()?;
 
-    unsafe {
-        dxlib_sys::dx_WaitKey();
-    }
+    wait_any_key()?;
 
     Ok(())
 }

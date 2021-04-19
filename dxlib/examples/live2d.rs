@@ -1,10 +1,8 @@
 use std::time::Duration;
 
 use dxlib::{
-    application::Application,
-    live2d::{Live2DModel, Live2DRenderer},
-    math::vector::Vector2,
-    screen::DrawScreen,
+    prelude::*,
+    graphics::live2d::{Live2DModel, Live2DRenderer},
 };
 use rand::{thread_rng, Rng};
 

@@ -1,14 +1,6 @@
 use std::{fmt::Write, thread, time::Duration};
 
-use dxlib::{
-    application::Application,
-    input::{
-        keyboard::{Key, KeyBoard},
-        mouse::Mouse,
-    },
-    screen::DrawScreen,
-    writer::DebugWriter,
-};
+use dxlib::prelude::*;
 
 fn main() -> anyhow::Result<()> {
     let mut app = Application::builder().screen_size(800, 400).build()?;

@@ -7908,7 +7908,7 @@ extern "C" {
     pub fn dx_GetMenuItemIDWithStrLen(ItemName: *const i8, ItemNameLength: usize) -> i32;
     pub fn dx_GetMenuItemName(ItemID: i32, NameBuffer: *mut i8) -> i32;
     pub fn dx_LoadMenuResource(MenuResourceID: i32) -> i32;
-    pub fn dx_SetMenuItemSelectCallBackFunction(CallbackFunction: *mut libc::c_void) -> i32;
+    pub fn dx_SetMenuItemSelectCallBackFunction(CallbackFunction: extern fn(*const i8, i32)) -> i32;
     pub fn dx_SetWindowMenu(MenuProc: *mut libc::c_void) -> i32;
     pub fn dx_SetDisplayMenuFlag(Flag: i32) -> i32;
     pub fn dx_GetDisplayMenuFlag() -> i32;

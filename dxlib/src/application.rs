@@ -1,13 +1,14 @@
-use std::ffi::CString;
+use std::{ffi::CString, time};
 
 use crate::{
     error::{DxLibError, I32CodeExt, Result},
     math::vector::Vector4,
     plugin::Plugin,
-    screen::Screen,
-    utils::to_sjis_cstring,
+    screen::{DrawScreen, Screen},
+    utils::to_sjis_bytes,
 };
 use dxlib_sys::*;
+use winapi::shared::windef::HWND;
 
 const DEFAULT_WIDTH: usize = 1280;
 const DEFAULT_HEIGHT: usize = 720;
@@ -34,9 +35,12 @@ impl Default for ColorBitDepth {
 pub struct Application {
     width: usize,
     height: usize,
+    timer: time::Instant,
+    frame: u128,
     color_depth: ColorBitDepth,
     refresh_rate: i32,
     screen_mode: ScreenMode,
+    window_handle: Option<HWND>,
     pub screen: Screen,
 }
 
@@ -51,6 +55,25 @@ impl Application {
             return Err(DxLibError::MessageProcessingFailed);
         }
         return Ok(());
+    }
+
+    pub fn update(&mut self) -> Result<()> {
+        self.process_message()?;
+        self.screen.set_draw_screen(DrawScreen::Back)?;
+        self.screen.flip()?;
+        self.frame += 1;
+        self.screen.clear()
+    }
+
+    pub fn get_window_handle(&mut self) -> Result<HWND> {
+        match self.window_handle {
+            None => {
+                let hwnd = unsafe { dx_GetMainWindowHandle() };
+                self.window_handle = Some(hwnd);
+                Ok(hwnd)
+            }
+            Some(hwnd) => Ok(hwnd),
+        }
     }
 
     pub fn run<F: FnOnce(&Application) -> Result<()>>(&self, f: F) -> Result<()> {
@@ -142,7 +165,7 @@ impl ApplicationBuilder {
         let screen_mode = self.screen_mode.unwrap_or(ScreenMode::Windowed);
 
         let _: Option<()> = self.title.clone().and_then(|title| {
-            let title = to_sjis_cstring(&title);
+            let title = to_sjis_bytes(&title);
             let title = title.as_ptr() as *const i8;
             unsafe {
                 dx_SetWindowText(title);
@@ -181,6 +204,9 @@ impl ApplicationBuilder {
             refresh_rate,
             screen_mode,
             screen,
+            window_handle: None,
+            timer: time::Instant::now(),
+            frame: 0,
         })
     }
 }

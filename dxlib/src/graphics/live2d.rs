@@ -45,6 +45,7 @@ impl<'model> Live2DRenderer<'model> {
     }
 }
 
+#[derive(Debug)]
 pub struct Live2DModel {
     handle: i32,
 }

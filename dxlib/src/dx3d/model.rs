@@ -7,7 +7,7 @@ use std::path::Path;
 use crate::{
     error::{I32CodeExt, Result},
     math::vector::Vector3,
-    utils::to_sjis_cstring,
+    utils::to_sjis_bytes,
 };
 
 #[repr(i32)]
@@ -25,7 +25,7 @@ pub struct Mv1Model {
 
 impl Mv1Model {
     pub fn load<P: AsRef<Path>>(path: P) -> Result<Mv1Model> {
-        let path = to_sjis_cstring(&path.as_ref().to_string_lossy());
+        let path = to_sjis_bytes(&path.as_ref().to_string_lossy());
         let path = path.as_ptr() as *const i8;
         let handle = unsafe { dx_MV1LoadModel(path).ensure_not_minus1()? };
         let pos = Vector3::default();

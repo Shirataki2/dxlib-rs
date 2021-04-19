@@ -29,30 +29,30 @@
 |GetPixel|〇|
 |グラフィックデータ制御関数||
 |LoadGraphScreen||
-|LoadGraph||
+|LoadGraph|〇|
 |LoadDivGraph||
-|MakeGraph||
+|MakeGraph|〇|
 |MakeScreen||
 |SetCreateDrawValidGraphMultiSample||
 |SetCreateGraphColorBitDepth||
 |SetDrawValidFloatTypeGraphCreateFlag||
 |SetCreateDrawValidGraphChannelNum||
 |SetUsePremulAlphaConvertLoad||
-|DrawGraph||
-|DrawTurnGraph||
-|DrawExtendGraph||
-|DrawRotaGraph||
-|DrawRotaGraph2||
-|DrawRotaGraph3||
+|DrawGraph| - |
+|DrawTurnGraph| - |
+|DrawExtendGraph| - |
+|DrawRotaGraph| - |
+|DrawRotaGraph2| - |
+|DrawRotaGraph3|〇|
 |DrawModiGraph||
 |DrawRectGraph||
 |DerivationGraph||
 |GetDrawScreenGraph||
 |GetGraphSize||
 |InitGraph||
-|DeleteGraph||
+|DeleteGraph|〇|
 |SetDrawMode||
-|SetDrawBlendMode||
+|SetDrawBlendMode|〇|
 |SetDrawBright||
 |SetTransColor||
 |LoadBlendGraph||

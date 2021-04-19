@@ -20,6 +20,11 @@ derive_more = "0.99.13"
 num = "0.4.0"
 num-traits = "0.2.14"
 num-derive = "0.3.3"
+smart-default = "0.6.0"
+
+[dependencies.winapi]
+version = "0.3"
+features = ["winuser", "windef"]
 
 [dev-dependencies]
 rand = "0.8"
