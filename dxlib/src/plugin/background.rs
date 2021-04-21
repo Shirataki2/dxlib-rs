@@ -1,6 +1,10 @@
 use dxlib_sys::{dx_SetAlwaysRunFlag, dx_SetBackgroundColor};
 
-use crate::{application::ApplicationBuilder, color::Color, error::{DxLibError, I32CodeExt}};
+use crate::{
+    application::ApplicationBuilder,
+    color::Color,
+    error::{DxLibError, I32CodeExt},
+};
 
 use super::Plugin;
 
@@ -20,7 +24,8 @@ impl Plugin for BackgroundPlugin {
                 self.color.g as i32,
                 self.color.b as i32,
                 self.color.a as i32,
-            ).ensure_zero()?;
+            )
+            .ensure_zero()?;
         }
         Ok(())
     }

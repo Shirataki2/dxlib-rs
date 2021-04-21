@@ -26,9 +26,9 @@ pub enum BlendMode {
     PmaInversed = DX_BLENDMODE_PMA_INVSRC,
 }
 
-#[derive(Debug, SmartDefault)]
+#[derive(Debug, SmartDefault, Clone)]
 pub struct GraphicModel {
-    handle: i32,
+    pub(crate) handle: i32,
     pub position: Vector2<i32>,
     pub pivot: Vector2<i32>,
     #[default(_code = "Vector2::<f64>::from([1.0, 1.0])")]

@@ -350,7 +350,7 @@ impl From<Vector3<f32>> for DxVector {
 
 impl<T> Vector3<T>
 where
-    T: Mul<Output = T> + Sub<Output = T> + Clone + Copy
+    T: Mul<Output = T> + Sub<Output = T> + Clone + Copy,
 {
     pub fn cross(self, rhs: Vector3<T>) -> Vector3<T> {
         let x = self[1] * rhs[2] - self[2] * rhs[1];
@@ -362,7 +362,15 @@ where
 
 impl<T> Vector3<T>
 where
-    T: Copy + Clone + Neg<Output = T> + Mul<Output = T> + MulAssign + One + Add<Output = T> + AddAssign + Zero
+    T: Copy
+        + Clone
+        + Neg<Output = T>
+        + Mul<Output = T>
+        + MulAssign
+        + One
+        + Add<Output = T>
+        + AddAssign
+        + Zero,
 {
     pub fn up() -> Vector3<T> {
         Self::from([T::zero(), T::one(), T::zero()])

@@ -1,4 +1,7 @@
-use dxlib_sys::{consts::*, dx_GetMouseInput, dx_GetMouseInputLog2, dx_GetMousePoint, dx_GetMouseWheelRotVol, dx_SetMouseDispFlag, dx_SetMousePoint};
+use dxlib_sys::{
+    consts::*, dx_GetMouseInput, dx_GetMouseInputLog2, dx_GetMousePoint, dx_GetMouseWheelRotVol,
+    dx_SetMouseDispFlag, dx_SetMousePoint,
+};
 
 use crate::{
     error::{I32CodeExt, Result},

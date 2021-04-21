@@ -15,10 +15,8 @@ impl Plugin for FullSceneAntiAliasPlugin {
 
     fn build(&self, _app: &mut ApplicationBuilder) -> Result<(), DxLibError> {
         unsafe {
-            dx_SetFullSceneAntiAliasingMode(
-                self.samples as i32,
-                self.quality as i32,
-            ).ensure_zero()?;
+            dx_SetFullSceneAntiAliasingMode(self.samples as i32, self.quality as i32)
+                .ensure_zero()?;
         }
         Ok(())
     }

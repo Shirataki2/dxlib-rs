@@ -7,7 +7,12 @@ use dxlib_sys::{
     dx_Live2D_Model_StartMotion, dx_Live2D_Model_Update, dx_Live2D_RenderBegin,
     dx_Live2D_RenderEnd, dx_Live2D_SetCubism4CoreDLLPath,
 };
-use std::{collections::BTreeMap, ffi::{CStr, CString}, path::Path, time::Duration};
+use std::{
+    collections::BTreeMap,
+    ffi::{CStr, CString},
+    path::Path,
+    time::Duration,
+};
 
 use crate::{
     error::{DxLibError, I32CodeExt, Result},
@@ -121,7 +126,8 @@ impl Live2DModel {
     pub fn get_hitarea_count(&self) -> Result<usize> {
         unsafe {
             dx_Live2D_Model_GetHitAreasCount(self.handle)
-                .ensure_positive().map(|r| r as usize)
+                .ensure_positive()
+                .map(|r| r as usize)
         }
     }
 
@@ -155,10 +161,10 @@ impl Live2DModel {
         let names = self
             .list_hitareas()?
             .iter()
-            .filter_map(|area| match self.is_hit(area, coord) { 
+            .filter_map(|area| match self.is_hit(area, coord) {
                 Ok(true) => Some(area.clone()),
                 _ => None,
-             })
+            })
             .collect::<Vec<_>>();
         Ok(names)
     }

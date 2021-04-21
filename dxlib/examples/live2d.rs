@@ -1,4 +1,4 @@
-use std::{time::Duration, fmt::Write};
+use std::{fmt::Write, time::Duration};
 
 use dxlib::{
     graphics::live2d::{Live2DModel, Live2DRenderer},

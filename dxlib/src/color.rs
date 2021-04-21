@@ -156,3 +156,29 @@ impl<T: ColorElement> Color<T> {
         Self::new(T::max(), T::max(), T::min(), T::max())
     }
 }
+
+use dxlib_sys::data::ColorU8 as DxColorU8;
+
+impl From<Color<u8>> for DxColorU8 {
+    fn from(c: Color<u8>) -> DxColorU8 {
+        DxColorU8 {
+            b: c.b,
+            g: c.g,
+            r: c.r,
+            a: c.a,
+        }
+    }
+}
+
+use dxlib_sys::data::ColorF32 as DxColorF32;
+
+impl From<Color<f32>> for DxColorF32 {
+    fn from(c: Color<f32>) -> DxColorF32 {
+        DxColorF32 {
+            b: c.b,
+            g: c.g,
+            r: c.r,
+            a: c.a,
+        }
+    }
+}

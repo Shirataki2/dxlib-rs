@@ -1,4 +1,4 @@
-use std::{ffi::CString, time, result::Result as StdResult};
+use std::{ffi::CString, result::Result as StdResult, time};
 
 use crate::{
     error::{DxLibError, I32CodeExt, Result},

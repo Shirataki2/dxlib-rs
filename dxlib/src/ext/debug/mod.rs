@@ -1,2 +1,2 @@
-pub mod fps;
 pub mod camera;
+pub mod fps;

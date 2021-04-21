@@ -490,8 +490,18 @@ use crate::math::vector::Vector3;
 
 impl<T> Matrix4x4<T>
 where
-    T: Neg<Output=T> + Sub<Output = T> + Mul<Output = T> + Clone + Copy + Zero + AddAssign + Copy + Float + One + Div<T, Output = T>,
-    Vector3<T>: Sub<Output = Vector3<T>> + Mul<T, Output = Vector3<T>>
+    T: Neg<Output = T>
+        + Sub<Output = T>
+        + Mul<Output = T>
+        + Clone
+        + Copy
+        + Zero
+        + AddAssign
+        + Copy
+        + Float
+        + One
+        + Div<T, Output = T>,
+    Vector3<T>: Sub<Output = Vector3<T>> + Mul<T, Output = Vector3<T>>,
 {
     pub fn from_lookat(eye: Vector3<T>, target: Vector3<T>, up: Vector3<T>) -> Self {
         let zaxis = (target - eye).normalized();

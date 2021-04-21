@@ -1,8 +1,8 @@
 use dxlib::{
     dx3d::prelude::*,
+    ext::{debug::camera::MouseCamera, models::GroundGrid},
+    plugin::FullSceneAntiAliasPlugin,
     prelude::*,
-    ext::{models::GroundGrid, debug::camera::MouseCamera},
-    plugin::FullSceneAntiAliasPlugin
 };
 use dxlib_sys::*;
 use std::fmt::Write;
@@ -35,14 +35,18 @@ fn main() -> anyhow::Result<()> {
     let mut model = Mv1Model::load("./examples/resources/model/Lat式ミクVer2.3_Normal.pmd")?;
 
     let mut camera = MouseCamera::new(
-        camera, 
-        Vector3::from([0.0, 16.0, -20.0]), 
-        Vector3::from([0.0, 11.0, 0.0]), 
-        4e-3, 
+        camera,
+        Vector3::from([0.0, 16.0, -20.0]),
+        Vector3::from([0.0, 11.0, 0.0]),
+        4e-3,
         1.7,
-        2.0
+        2.0,
     );
+    Fog::enable(true)?;
+    Fog::set_color(Color::blue())?;
+    Fog::set_fog_start_end(100.0, 1000.0)?;
 
+    World::set_ambient(Color::blue())?;
     unsafe {
         dx_MV1PhysicsResetState(model.handle);
         dx_MV1SetShapeRate(model.handle, 29, 1.0, 0);
