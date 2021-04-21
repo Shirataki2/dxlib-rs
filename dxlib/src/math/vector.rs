@@ -166,7 +166,7 @@ impl<T: AddAssign + Add<Output = T> + Clone, const DIM: usize> Add<Vector<T, DIM
 {
     type Output = Vector<T, DIM>;
     fn add(self, rhs: Vector<T, DIM>) -> Vector<T, DIM> {
-        let mut v = self.clone();
+        let mut v = self;
         v += rhs;
         v
     }
@@ -175,7 +175,7 @@ impl<T: AddAssign + Add<Output = T> + Clone, const DIM: usize> Add<Vector<T, DIM
 impl<T: AddAssign + Add<Output = T> + Clone, const DIM: usize> Add<T> for Vector<T, DIM> {
     type Output = Vector<T, DIM>;
     fn add(self, rhs: T) -> Vector<T, DIM> {
-        let mut v = self.clone();
+        let mut v = self;
         v += rhs;
         v
     }
@@ -202,7 +202,7 @@ impl<T: SubAssign + Sub<Output = T> + Clone, const DIM: usize> Sub<Vector<T, DIM
 {
     type Output = Vector<T, DIM>;
     fn sub(self, rhs: Vector<T, DIM>) -> Vector<T, DIM> {
-        let mut v = self.clone();
+        let mut v = self;
         v -= rhs;
         v
     }
@@ -211,7 +211,7 @@ impl<T: SubAssign + Sub<Output = T> + Clone, const DIM: usize> Sub<Vector<T, DIM
 impl<T: SubAssign + Sub<Output = T> + Clone, const DIM: usize> Sub<T> for Vector<T, DIM> {
     type Output = Vector<T, DIM>;
     fn sub(self, rhs: T) -> Vector<T, DIM> {
-        let mut v = self.clone();
+        let mut v = self;
         v -= rhs;
         v
     }
@@ -238,7 +238,7 @@ impl<T: MulAssign + Mul<Output = T> + Clone, const DIM: usize> Mul<Vector<T, DIM
 {
     type Output = Vector<T, DIM>;
     fn mul(self, rhs: Vector<T, DIM>) -> Vector<T, DIM> {
-        let mut v = self.clone();
+        let mut v = self;
         v *= rhs;
         v
     }
@@ -247,7 +247,7 @@ impl<T: MulAssign + Mul<Output = T> + Clone, const DIM: usize> Mul<Vector<T, DIM
 impl<T: MulAssign + Mul<Output = T> + Clone, const DIM: usize> Mul<T> for Vector<T, DIM> {
     type Output = Vector<T, DIM>;
     fn mul(self, rhs: T) -> Vector<T, DIM> {
-        let mut v = self.clone();
+        let mut v = self;
         v *= rhs;
         v
     }
@@ -274,7 +274,7 @@ impl<T: DivAssign + Div<Output = T> + Clone, const DIM: usize> Div<Vector<T, DIM
 {
     type Output = Vector<T, DIM>;
     fn div(self, rhs: Vector<T, DIM>) -> Vector<T, DIM> {
-        let mut v = self.clone();
+        let mut v = self;
         v /= rhs;
         v
     }
@@ -283,7 +283,7 @@ impl<T: DivAssign + Div<Output = T> + Clone, const DIM: usize> Div<Vector<T, DIM
 impl<T: DivAssign + Div<Output = T> + Clone, const DIM: usize> Div<T> for Vector<T, DIM> {
     type Output = Vector<T, DIM>;
     fn div(self, rhs: T) -> Vector<T, DIM> {
-        let mut v = self.clone();
+        let mut v = self;
         v /= rhs;
         v
     }
@@ -310,7 +310,7 @@ impl<T: RemAssign + Rem<Output = T> + Clone, const DIM: usize> Rem<Vector<T, DIM
 {
     type Output = Vector<T, DIM>;
     fn rem(self, rhs: Vector<T, DIM>) -> Vector<T, DIM> {
-        let mut v = self.clone();
+        let mut v = self;
         v %= rhs;
         v
     }
@@ -319,7 +319,7 @@ impl<T: RemAssign + Rem<Output = T> + Clone, const DIM: usize> Rem<Vector<T, DIM
 impl<T: RemAssign + Rem<Output = T> + Clone, const DIM: usize> Rem<T> for Vector<T, DIM> {
     type Output = Vector<T, DIM>;
     fn rem(self, rhs: T) -> Vector<T, DIM> {
-        let mut v = self.clone();
+        let mut v = self;
         v %= rhs;
         v
     }
@@ -328,7 +328,7 @@ impl<T: RemAssign + Rem<Output = T> + Clone, const DIM: usize> Rem<T> for Vector
 impl<T: Neg<Output = T> + Clone, const DIM: usize> Neg for Vector<T, DIM> {
     type Output = Vector<T, DIM>;
     fn neg(self) -> Vector<T, DIM> {
-        let mut v = self.clone();
+        let mut v = self;
         for i in 0..DIM {
             v[i] = -v[i].clone();
         }
@@ -345,6 +345,47 @@ impl From<Vector3<f32>> for DxVector {
             y: v[1],
             z: v[2],
         }
+    }
+}
+
+impl<T> Vector3<T>
+where
+    T: Mul<Output = T> + Sub<Output = T> + Clone + Copy
+{
+    pub fn cross(self, rhs: Vector3<T>) -> Vector3<T> {
+        let x = self[1] * rhs[2] - self[2] * rhs[1];
+        let y = self[2] * rhs[0] - self[0] * rhs[2];
+        let z = self[0] * rhs[1] - self[1] * rhs[0];
+        Vector3::from([x, y, z])
+    }
+}
+
+impl<T> Vector3<T>
+where
+    T: Copy + Clone + Neg<Output = T> + Mul<Output = T> + MulAssign + One + Add<Output = T> + AddAssign + Zero
+{
+    pub fn up() -> Vector3<T> {
+        Self::from([T::zero(), T::one(), T::zero()])
+    }
+
+    pub fn down() -> Vector3<T> {
+        Self::from([T::zero(), -T::one(), T::zero()])
+    }
+
+    pub fn forward() -> Vector3<T> {
+        Self::from([T::zero(), T::zero(), T::one()])
+    }
+
+    pub fn back() -> Vector3<T> {
+        Self::from([T::zero(), T::zero(), -T::one()])
+    }
+
+    pub fn right() -> Vector3<T> {
+        Self::from([T::one(), T::zero(), T::zero()])
+    }
+
+    pub fn left() -> Vector3<T> {
+        Self::from([-T::one(), T::zero(), T::zero()])
     }
 }
 
@@ -365,7 +406,17 @@ mod tests {
     fn test_dot() {
         let v = Vector::from([3.0, 4.0, 12.0]);
         let u = Vector::from([4.0, 4.0, -2.0]);
-        assert_eq!(v.dot(u), 4.0);
-        assert_eq!(v.magnitude(), 13.0);
+        assert!((v.dot(u) - 4.0f64).abs() < 1e-6);
+        assert!((v.magnitude() - 13.0f64).abs() < 1e-6);
+    }
+
+    #[test]
+    fn test_cross() {
+        let v = Vector::from([1.0, 2.0, 3.0]);
+        let u = Vector::from([4.0, 5.0, 6.0]);
+        let x = v.cross(u);
+        assert!((x[0] - -3.0f64).abs() < 1e-6);
+        assert!((x[1] - 6.0f64).abs() < 1e-6);
+        assert!((x[2] - -3.0f64).abs() < 1e-6);
     }
 }

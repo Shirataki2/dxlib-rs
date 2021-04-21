@@ -1,3 +1,4 @@
+use num::Float;
 #[cfg(feature = "unstable")]
 use num_traits::Num;
 use num_traits::{One, Zero};
@@ -8,6 +9,10 @@ use std::ops::*;
 use super::{vector::Vector, DotProduct};
 
 pub type SqMatrix<T, const DIM: usize> = Matrix<T, DIM, DIM>;
+
+pub type Matrix2x2<T> = SqMatrix<T, 2>;
+pub type Matrix3x3<T> = SqMatrix<T, 3>;
+pub type Matrix4x4<T> = SqMatrix<T, 4>;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Matrix<T, const ROW: usize, const COL: usize>([[T; COL]; ROW]);
@@ -240,7 +245,7 @@ impl<T: AddAssign + Add<Output = T> + Clone, const ROW: usize, const COL: usize>
 {
     type Output = Matrix<T, ROW, COL>;
     fn add(self, rhs: Matrix<T, ROW, COL>) -> Matrix<T, ROW, COL> {
-        let mut v = self.clone();
+        let mut v = self;
         v += rhs;
         v
     }
@@ -251,7 +256,7 @@ impl<T: AddAssign + Add<Output = T> + Clone, const ROW: usize, const COL: usize>
 {
     type Output = Matrix<T, ROW, COL>;
     fn add(self, rhs: T) -> Matrix<T, ROW, COL> {
-        let mut v = self.clone();
+        let mut v = self;
         v += rhs;
         v
     }
@@ -286,7 +291,7 @@ impl<T: SubAssign + Sub<Output = T> + Clone, const ROW: usize, const COL: usize>
 {
     type Output = Matrix<T, ROW, COL>;
     fn sub(self, rhs: Matrix<T, ROW, COL>) -> Matrix<T, ROW, COL> {
-        let mut v = self.clone();
+        let mut v = self;
         v -= rhs;
         v
     }
@@ -297,7 +302,7 @@ impl<T: SubAssign + Sub<Output = T> + Clone, const ROW: usize, const COL: usize>
 {
     type Output = Matrix<T, ROW, COL>;
     fn sub(self, rhs: T) -> Matrix<T, ROW, COL> {
-        let mut v = self.clone();
+        let mut v = self;
         v -= rhs;
         v
     }
@@ -332,7 +337,7 @@ impl<T: MulAssign + Mul<Output = T> + Clone, const ROW: usize, const COL: usize>
 {
     type Output = Matrix<T, ROW, COL>;
     fn mul(self, rhs: Matrix<T, ROW, COL>) -> Matrix<T, ROW, COL> {
-        let mut v = self.clone();
+        let mut v = self;
         v *= rhs;
         v
     }
@@ -343,7 +348,7 @@ impl<T: MulAssign + Mul<Output = T> + Clone, const ROW: usize, const COL: usize>
 {
     type Output = Matrix<T, ROW, COL>;
     fn mul(self, rhs: T) -> Matrix<T, ROW, COL> {
-        let mut v = self.clone();
+        let mut v = self;
         v *= rhs;
         v
     }
@@ -378,7 +383,7 @@ impl<T: DivAssign + Div<Output = T> + Clone, const ROW: usize, const COL: usize>
 {
     type Output = Matrix<T, ROW, COL>;
     fn div(self, rhs: Matrix<T, ROW, COL>) -> Matrix<T, ROW, COL> {
-        let mut v = self.clone();
+        let mut v = self;
         v /= rhs;
         v
     }
@@ -389,7 +394,7 @@ impl<T: DivAssign + Div<Output = T> + Clone, const ROW: usize, const COL: usize>
 {
     type Output = Matrix<T, ROW, COL>;
     fn div(self, rhs: T) -> Matrix<T, ROW, COL> {
-        let mut v = self.clone();
+        let mut v = self;
         v /= rhs;
         v
     }
@@ -424,7 +429,7 @@ impl<T: RemAssign + Rem<Output = T> + Clone, const ROW: usize, const COL: usize>
 {
     type Output = Matrix<T, ROW, COL>;
     fn rem(self, rhs: Matrix<T, ROW, COL>) -> Matrix<T, ROW, COL> {
-        let mut v = self.clone();
+        let mut v = self;
         v %= rhs;
         v
     }
@@ -435,7 +440,7 @@ impl<T: RemAssign + Rem<Output = T> + Clone, const ROW: usize, const COL: usize>
 {
     type Output = Matrix<T, ROW, COL>;
     fn rem(self, rhs: T) -> Matrix<T, ROW, COL> {
-        let mut v = self.clone();
+        let mut v = self;
         v %= rhs;
         v
     }
@@ -454,7 +459,7 @@ where
         + Sub<Output = T>,
 {
     fn lu_decompose(self) -> (Self, Self) {
-        let mut v = self.clone();
+        let mut v = self;
         for i in 0..DIM - 1 {
             for j in i + 1..DIM {
                 let s = v[j][i] / v[i][i];
@@ -478,6 +483,34 @@ where
             }
         }
         (l, u)
+    }
+}
+
+use crate::math::vector::Vector3;
+
+impl<T> Matrix4x4<T>
+where
+    T: Neg<Output=T> + Sub<Output = T> + Mul<Output = T> + Clone + Copy + Zero + AddAssign + Copy + Float + One + Div<T, Output = T>,
+    Vector3<T>: Sub<Output = Vector3<T>> + Mul<T, Output = Vector3<T>>
+{
+    pub fn from_lookat(eye: Vector3<T>, target: Vector3<T>, up: Vector3<T>) -> Self {
+        let zaxis = (target - eye).normalized();
+        let xaxis = up.cross(zaxis).normalized();
+        let yaxis = zaxis.cross(xaxis);
+        Matrix4x4::from([
+            [xaxis[0], yaxis[0], zaxis[0], T::zero()],
+            [xaxis[1], yaxis[1], zaxis[1], T::zero()],
+            [xaxis[2], yaxis[2], zaxis[2], T::zero()],
+            [-eye.dot(xaxis), -eye.dot(yaxis), -eye.dot(zaxis), T::one()],
+        ])
+    }
+}
+
+use dxlib_sys::data::Matrix as DxMatrix;
+
+impl From<Matrix4x4<f32>> for DxMatrix {
+    fn from(v: Matrix4x4<f32>) -> DxMatrix {
+        DxMatrix { m: v.0 }
     }
 }
 
@@ -525,6 +558,6 @@ mod tests {
     #[test]
     fn test_det() {
         let v = Matrix::from([[-1.0, 2.0, 3.0], [4.0, -2.0, 1.0], [1.0, 4.0, 5.0]]);
-        assert_eq!(v.det(), 30.0);
+        assert!((v.det() - 30.0f64).abs() < 1e-6);
     }
 }

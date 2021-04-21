@@ -1,3 +1,5 @@
+#![allow(clippy::needless_range_loop)]
+
 use dxlib_sys::*;
 use std::process::exit;
 const MAP_SIZE: usize = 64;

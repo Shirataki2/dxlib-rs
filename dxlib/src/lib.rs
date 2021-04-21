@@ -1,3 +1,5 @@
+#![allow(clippy::needless_range_loop)]
+
 #![cfg_attr(feature = "unstable", allow(incomplete_features))]
 #![cfg_attr(feature = "unstable", feature(const_generics))]
 #![cfg_attr(feature = "unstable", feature(const_evaluatable_checked))]
@@ -12,5 +14,6 @@ pub mod math;
 pub mod plugin;
 pub mod prelude;
 pub mod screen;
+pub mod sound;
 pub mod utils;
 pub mod writer;

@@ -7,7 +7,7 @@ pub use crate::input::{
     mouse::{Mouse, MouseButton, MouseInput, MouseInputType},
 };
 
-pub use crate::math::{matrix::*, vector::*, DotProduct};
+pub use crate::math::{angle::*, matrix::*, vector::*, DotProduct};
 
 pub use crate::plugin::{BackgroundPlugin, Plugin};
 
@@ -18,9 +18,9 @@ pub use crate::color::Color;
 pub use crate::error::DxLibError;
 
 pub use crate::graphics::{
-    shapes::*, 
     image::{BlendMode, GraphicModel},
-    text::{TextStyle, TextStyleBuilder, Font, FontBuilder, FontType}
+    shapes::*,
+    text::{Font, FontBuilder, FontType, TextStyle, TextStyleBuilder},
 };
 
 pub use crate::screen::DrawScreen;

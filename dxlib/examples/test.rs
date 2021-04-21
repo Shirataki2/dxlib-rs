@@ -9,30 +9,36 @@ fn main() -> anyhow::Result<()> {
         .add_plugin(BackgroundPlugin {
             run_always: true,
             color: Color::white(),
-        })
+        })?
         .build()?;
+    app.screen.set_draw_screen(DrawScreen::Back)?;
 
-    let font = Font::builder()
-        .name("游明朝")
-        .font_type(FontType::AntiAliasing4x4)
-        .size(30)
-        .thickness(3)
-        .build()?;
+    // let font = Font::builder()
+    //     .font_type(FontType::AntiAliasing4x4)
+    //     .size(30)
+    //     .thickness(3)
+    //     .build()?;
 
-    let style = TextStyle::builder()
-        .coord(Vector::from([70, 210]))
-        .color(Color::white())
-        .font(font)
-        .build();
+    // let style = TextStyle::builder()
+    //     .coord(Vector::from([70, 210]))
+    //     .color(Color::white())
+    //     .font(font)
+    //     .build();
 
+    let mut image = GraphicModel::load("lena.png")?;
+    image.position = Vector::from([200, 200]);
+    image.pivot = Vector::from([110, 110]);
     while app.update().is_ok() && !KeyBoard::is_hit(Key::ESCAPE) {
         draw_background()?;
-        style.draw("HELLO, DXライブラリ！")?;
+        image.rotation += Angle::from_radians(0.05);
+        image.draw()?;
+        // style.draw("HELLO, World")?;
     }
 
     Ok(())
 }
 
+#[allow(clippy::many_single_char_names)]
 fn draw_background() -> anyhow::Result<()> {
     let r = RESOLUTION;
     for i in 0..r {

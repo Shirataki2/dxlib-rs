@@ -3,9 +3,12 @@ use std::any::Any;
 use crate::application::ApplicationBuilder;
 
 pub trait Plugin: Any + Send + Sync {
-    fn build(&self, app: &mut ApplicationBuilder);
+    type Error: Sized + Send + Sync + 'static;
+    fn build(&self, app: &mut ApplicationBuilder) -> Result<(), Self::Error>;
 }
 
-pub mod basic;
+pub mod background;
+pub mod antialias;
 
-pub use basic::BackgroundPlugin;
+pub use background::BackgroundPlugin;
+pub use antialias::FullSceneAntiAliasPlugin;

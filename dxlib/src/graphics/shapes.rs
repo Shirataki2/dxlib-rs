@@ -68,7 +68,7 @@ impl Line {
                 self.start[1],
                 self.end[0],
                 self.end[1],
-                self.color.to_u32(),
+                self.color.as_u32(),
                 self.thickness,
             )
             .ensure_zero()
@@ -121,7 +121,7 @@ impl LineAntiAlias {
                 self.start[1],
                 self.end[0],
                 self.end[1],
-                self.color.to_u32(),
+                self.color.as_u32(),
                 self.thickness,
             )
             .ensure_zero()
@@ -167,7 +167,7 @@ impl Rect {
                 self.left_top[1],
                 self.right_bottom[0],
                 self.right_bottom[1],
-                self.color.to_u32(),
+                self.color.as_u32(),
                 if self.filled { TRUE } else { FALSE },
             )
             .ensure_zero()
@@ -224,7 +224,7 @@ impl RectAntiAlias {
                 self.left_top[1],
                 self.right_bottom[0],
                 self.right_bottom[1],
-                self.color.to_u32(),
+                self.color.as_u32(),
                 self.filled as i32,
                 self.thickness,
             )
@@ -279,7 +279,7 @@ impl Circle {
                 self.center[0],
                 self.center[1],
                 self.radius,
-                self.color.to_u32(),
+                self.color.as_u32(),
                 self.filled as i32,
                 self.thickness,
             )
@@ -339,7 +339,7 @@ impl CircleAntiAlias {
                 self.center[1],
                 self.radius,
                 self.resolution,
-                self.color.to_u32(),
+                self.color.as_u32(),
                 self.filled as i32,
                 self.thickness,
             )
@@ -397,7 +397,7 @@ impl Oval {
                 self.center[1],
                 self.radius[0],
                 self.radius[1],
-                self.color.to_u32(),
+                self.color.as_u32(),
                 self.filled as i32,
                 self.thickness,
             )
@@ -430,6 +430,7 @@ impl Default for OvalAntiAlias {
 }
 
 impl OvalAntiAlias {
+    #[allow(clippy::too_many_arguments)]
     pub fn from_coords(
         x: f32,
         y: f32,
@@ -460,7 +461,7 @@ impl OvalAntiAlias {
                 self.radius[0],
                 self.radius[1],
                 self.resolution,
-                self.color.to_u32(),
+                self.color.as_u32(),
                 self.filled as i32,
                 self.thickness,
             )
@@ -500,7 +501,7 @@ impl Triangle {
                 self.v2[1],
                 self.v3[0],
                 self.v3[1],
-                self.color.to_u32(),
+                self.color.as_u32(),
                 self.filled as i32,
             )
             .ensure_zero()
@@ -541,7 +542,7 @@ impl TriangleAntiAlias {
                 self.v2[1],
                 self.v3[0],
                 self.v3[1],
-                self.color.to_u32(),
+                self.color.as_u32(),
                 self.filled as i32,
                 self.thickness,
             )
@@ -558,6 +559,6 @@ pub struct Pixel {
 
 impl Pixel {
     pub fn draw(&self) -> Result<()> {
-        unsafe { dx_DrawPixel(self.coord[0], self.coord[1], self.color.to_u32()).ensure_zero() }
+        unsafe { dx_DrawPixel(self.coord[0], self.coord[1], self.color.as_u32()).ensure_zero() }
     }
 }

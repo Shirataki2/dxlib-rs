@@ -1,7 +1,4 @@
-use dxlib_sys::{
-    consts::*, dx_GetMouseInput, dx_GetMouseInputLog2, dx_GetMousePoint, dx_SetMouseDispFlag,
-    dx_SetMousePoint,
-};
+use dxlib_sys::{consts::*, dx_GetMouseInput, dx_GetMouseInputLog2, dx_GetMousePoint, dx_GetMouseWheelRotVol, dx_SetMouseDispFlag, dx_SetMousePoint};
 
 use crate::{
     error::{I32CodeExt, Result},
@@ -10,7 +7,7 @@ use crate::{
 use enum_iterator::IntoEnumIterator;
 use num_derive::FromPrimitive;
 
-#[derive(Debug, Clone, Copy, IntoEnumIterator, FromPrimitive)]
+#[derive(Debug, Clone, Copy, IntoEnumIterator, FromPrimitive, PartialEq, Eq)]
 #[repr(i32)]
 pub enum MouseButton {
     Left = MOUSE_INPUT_LEFT,
@@ -51,6 +48,13 @@ impl Mouse {
         Ok(Vector2::from([x, y]))
     }
 
+    pub fn get_position_as_f32() -> Result<Vector2<f32>> {
+        let mut x = 0;
+        let mut y = 0;
+        unsafe { dx_GetMousePoint(&mut x, &mut y).ensure_zero()? };
+        Ok(Vector2::from([x as f32, y as f32]))
+    }
+
     pub fn set_position(position: Vector2<i32>) -> Result<()> {
         unsafe { dx_SetMousePoint(position[0], position[1]).ensure_zero() }
     }
@@ -77,5 +81,10 @@ impl Mouse {
         } else {
             None
         }
+    }
+
+    pub fn get_wheel_input(reset: bool) -> Result<i32> {
+        let wheel = unsafe { dx_GetMouseWheelRotVol(reset as i32) };
+        Ok(wheel)
     }
 }

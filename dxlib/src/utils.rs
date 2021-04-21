@@ -6,8 +6,7 @@ use std::{ffi::CString, path::Path};
 pub fn to_sjis_bytes(s: &str) -> Vec<u8> {
     let s = format!("{}\0", s);
     let (bytes, _, _) = SHIFT_JIS.encode(&s);
-    let bytes = bytes.to_vec();
-    bytes
+    bytes.to_vec()
 }
 
 pub fn path_to_cstring<P: AsRef<Path>>(path: &P) -> Result<CString> {

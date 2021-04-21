@@ -2,7 +2,7 @@ use crate::error::{I32CodeExt, Result};
 use dxlib_sys::{consts::*, dx_CheckHitKey, dx_GetHitKeyStateAll};
 use enum_iterator::IntoEnumIterator;
 
-#[derive(Debug, Clone, Copy, IntoEnumIterator)]
+#[derive(Debug, Clone, Copy, IntoEnumIterator, PartialEq, Eq)]
 #[repr(i32)]
 pub enum Key {
     A = KEY_INPUT_A,

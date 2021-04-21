@@ -1,6 +1,8 @@
 use std::path::Path;
 
-use dxlib_sys::{consts::*, dx_DeleteGraph, dx_DrawRotaGraph3, dx_LoadGraph, dx_MakeGraph, dx_SetDrawBlendMode};
+use dxlib_sys::{
+    consts::*, dx_DeleteGraph, dx_DrawRotaGraph3, dx_LoadGraph, dx_MakeGraph, dx_SetDrawBlendMode,
+};
 use smart_default::SmartDefault;
 
 use crate::{
@@ -27,15 +29,15 @@ pub enum BlendMode {
 #[derive(Debug, SmartDefault)]
 pub struct GraphicModel {
     handle: i32,
-    position: Vector2<i32>,
-    pivot: Vector2<i32>,
+    pub position: Vector2<i32>,
+    pub pivot: Vector2<i32>,
     #[default(_code = "Vector2::<f64>::from([1.0, 1.0])")]
-    scale: Vector2<f64>,
-    rotation: Angle<f64>,
+    pub scale: Vector2<f64>,
+    pub rotation: Angle<f64>,
     #[default = true]
-    transparent: bool,
-    xturned: bool,
-    yturned: bool,
+    pub transparent: bool,
+    pub xturned: bool,
+    pub yturned: bool,
     #[default(_code = "(BlendMode::NoBlend, 255)")]
     blend: (BlendMode, u8),
 }
@@ -106,7 +108,7 @@ impl GraphicModel {
                 self.pivot[1],
                 self.scale[0],
                 self.scale[1],
-                *self.rotation,
+                self.rotation.normalized(),
                 self.handle,
                 self.transparent as i32,
                 self.xturned as i32,

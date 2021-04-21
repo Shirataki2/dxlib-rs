@@ -1,10 +1,10 @@
-use std::{ffi::CString, time};
+use std::{ffi::CString, time, result::Result as StdResult};
 
 use crate::{
     error::{DxLibError, I32CodeExt, Result},
     math::vector::Vector4,
     plugin::Plugin,
-    screen::{DrawScreen, Screen},
+    screen::Screen,
     utils::to_sjis_bytes,
 };
 use dxlib_sys::*;
@@ -54,12 +54,11 @@ impl Application {
         if code != 0 {
             return Err(DxLibError::MessageProcessingFailed);
         }
-        return Ok(());
+        Ok(())
     }
 
     pub fn update(&mut self) -> Result<()> {
         self.process_message()?;
-        self.screen.set_draw_screen(DrawScreen::Back)?;
         self.screen.flip()?;
         self.frame += 1;
         self.screen.clear()
@@ -152,9 +151,9 @@ impl ApplicationBuilder {
         self
     }
 
-    pub fn add_plugin<P: Plugin>(&mut self, plugin: P) -> &mut Self {
-        plugin.build(self);
-        self
+    pub fn add_plugin<P: Plugin>(&mut self, plugin: P) -> StdResult<&mut Self, P::Error> {
+        plugin.build(self)?;
+        Ok(self)
     }
 
     pub fn build(&mut self) -> Result<Application> {

@@ -1,5 +1,14 @@
-use crate::{error::{Result, I32CodeExt}, color::Color, math::vector::Vector2, utils::to_sjis_bytes};
-use dxlib_sys::{consts::*, dx_CreateFontToHandle, dx_DeleteFontToHandle, dx_DrawString, dx_DrawStringToHandle};
+use std::ptr;
+
+use crate::{
+    color::Color,
+    error::{I32CodeExt, Result},
+    math::vector::Vector2,
+    utils::to_sjis_bytes,
+};
+use dxlib_sys::{
+    consts::*, dx_CreateFontToHandle, dx_DeleteFontToHandle, dx_DrawString, dx_DrawStringToHandle,
+};
 use smart_default::SmartDefault;
 
 #[derive(Debug, Clone, SmartDefault)]
@@ -9,7 +18,7 @@ pub struct TextStyle {
     pub color: Color<u8>,
     #[default(_code = "Color::transparent()")]
     pub edge_color: Color<u8>,
-    pub font: Option<Font>
+    pub font: Option<Font>,
 }
 
 impl TextStyle {
@@ -23,18 +32,25 @@ impl TextStyle {
             match self.font {
                 Some(ref font) => {
                     dx_DrawStringToHandle(
-                        self.coord[0], self.coord[1],
+                        self.coord[0],
+                        self.coord[1],
                         s.as_ptr() as *const i8,
-                        self.color.to_u32(), font.handle,
-                        self.edge_color.to_u32(), 0
-                    ).ensure_zero()?;
+                        self.color.as_u32(),
+                        font.handle,
+                        self.edge_color.as_u32(),
+                        0,
+                    )
+                    .ensure_zero()?;
                 }
                 None => {
                     dx_DrawString(
-                        self.coord[0], self.coord[1], 
+                        self.coord[0],
+                        self.coord[1],
                         s.as_ptr() as *const i8,
-                        self.color.to_u32(), self.edge_color.to_u32()
-                    ).ensure_zero()?;
+                        self.color.as_u32(),
+                        self.edge_color.as_u32(),
+                    )
+                    .ensure_zero()?;
                 }
             }
         }
@@ -119,9 +135,7 @@ impl Font {
     }
 
     fn close(&self) -> Result<()> {
-        unsafe {
-            dx_DeleteFontToHandle(self.handle).ensure_zero()
-        }
+        unsafe { dx_DeleteFontToHandle(self.handle).ensure_zero() }
     }
 }
 
@@ -175,10 +189,8 @@ impl FontBuilder {
             font.font_type = font_type;
         }
         let name = match self.name {
-            Some(ref name) => {
-                to_sjis_bytes(name).as_ptr() as *const i8
-            }
-            None => 0 as *const i8
+            Some(ref name) => to_sjis_bytes(name).as_ptr() as *const i8,
+            None => ptr::null::<i8>(),
         };
         unsafe {
             let handle = dx_CreateFontToHandle(
@@ -186,8 +198,12 @@ impl FontBuilder {
                 font.size,
                 font.thickness,
                 font.font_type as i32,
-                -1, -1, 0, -1
-            ).ensure_positive()?;
+                -1,
+                -1,
+                0,
+                -1,
+            )
+            .ensure_positive()?;
             font.handle = handle;
         }
         Ok(font)

@@ -1,10 +1,31 @@
-use derive_more::Deref;
-use num_traits::float::FloatCore;
+use derive_more::{Add, AddAssign, Deref, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
+use num::cast;
+use num_traits::{float::FloatCore, FloatConst};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Deref)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    Default,
+    Deref,
+    Add,
+    Sub,
+    Mul,
+    Div,
+    AddAssign,
+    SubAssign,
+    MulAssign,
+    DivAssign,
+)]
 pub struct Angle<F>(F);
 
-impl<F: FloatCore> Angle<F> {
+impl<F: FloatCore + FloatConst> Angle<F> {
+    pub fn normalized(&self) -> F {
+        self.0 % (cast::<f32, F>(2.0f32).unwrap() * F::PI())
+    }
+
     pub fn from_degrees(deg: F) -> Angle<F> {
         Self(Self::deg2rad(deg))
     }

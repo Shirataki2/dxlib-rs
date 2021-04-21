@@ -8,10 +8,16 @@ pub enum DxLibError {
     InitializeFailed,
     #[error("Non Zero Returned")]
     NonZeroReturned,
+    #[error("Null Returned")]
+    NullReturned,
     #[error("Failed to process message")]
     MessageProcessingFailed,
     #[error("Failed to convert path to C-string")]
     InvalidPath,
+    #[error("{0} must be between {1} and {2}")]
+    InvalidRange(String, i32, i32),
+    #[error("String conversion failed: {0}")]
+    IntoStringError(#[from] std::ffi::IntoStringError),
     #[error("Interior null character found")]
     NulError(#[from] std::ffi::NulError),
 }

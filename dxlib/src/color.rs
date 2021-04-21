@@ -42,7 +42,7 @@ impl<T: ColorElement> Color<T> {
 }
 
 impl Color<u8> {
-    pub fn to_u32(&self) -> u32 {
+    pub fn as_u32(&self) -> u32 {
         unsafe { dx_GetColor(self.r as i32, self.g as i32, self.b as i32) }
     }
 }
@@ -119,7 +119,7 @@ impl From<Color<f32>> for Color<u8> {
     }
 }
 
-impl<T: ColorElement>  Color<T> {
+impl<T: ColorElement> Color<T> {
     pub fn transparent() -> Color<T> {
         Self::new(T::min(), T::min(), T::min(), T::min())
     }

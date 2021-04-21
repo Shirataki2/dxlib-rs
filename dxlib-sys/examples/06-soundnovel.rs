@@ -2,7 +2,7 @@ use dxlib_sys::*;
 use encoding_rs::SHIFT_JIS;
 use std::{process::exit, ptr};
 
-const MESSAGE: &'static str = include_str!("06-soundnovel.txt");
+const MESSAGE: &str = include_str!("06-soundnovel.txt");
 const FONT_SIZE: i32 = 24;
 
 fn main() -> anyhow::Result<()> {
@@ -83,8 +83,7 @@ fn main() -> anyhow::Result<()> {
             }
             if MESSAGE.split('\n').collect::<Vec<_>>()[ln]
                 .chars()
-                .collect::<Vec<_>>()
-                .len()
+                .count()
                 == ch
             {
                 ln += 1;

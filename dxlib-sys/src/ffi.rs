@@ -1,3 +1,5 @@
+#![allow(clippy::all)]
+
 use winapi::{
     shared::{
         guiddef::GUID,
@@ -7555,6 +7557,7 @@ extern "C" {
         value: f32,
     ) -> i32;
     pub fn dx_Live2D_Model_GetHitAreasCount(Live2DModelHandle: i32) -> i32;
+    pub fn dx_Live2D_Model_GetHitAreaName(Live2DModelHandle: i32, index: i32) -> *const i8;
     pub fn dx_Live2D_Model_GetExpressionCount(Live2DModelHandle: i32) -> i32;
     pub fn dx_Live2D_Model_GetMotionGroupCount(Live2DModelHandle: i32) -> i32;
     pub fn dx_Live2D_Model_GetMotionCount(Live2DModelHandle: i32, groupName: *const i8) -> i32;
