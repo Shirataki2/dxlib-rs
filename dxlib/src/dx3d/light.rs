@@ -1,6 +1,9 @@
 use dxlib_sys::dx_SetGlobalAmbientLight;
 
-use crate::{error::{Result, I32CodeExt}, color::Color};
+use crate::{
+    color::Color,
+    error::{I32CodeExt, Result},
+};
 
 pub struct World;
 

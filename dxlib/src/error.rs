@@ -20,6 +20,10 @@ pub enum DxLibError {
     IntoStringError(#[from] std::ffi::IntoStringError),
     #[error("Interior null character found")]
     NulError(#[from] std::ffi::NulError),
+    #[error("No null character")]
+    FromNulError(#[from] std::ffi::FromBytesWithNulError),
+    #[error(transparent)]
+    Other(#[from] anyhow::Error),
 }
 
 pub trait I32CodeExt: Sized {

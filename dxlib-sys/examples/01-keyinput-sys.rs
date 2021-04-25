@@ -12,10 +12,7 @@ fn main() -> anyhow::Result<()> {
         }
         dx_SetDrawScreen(DX_SCREEN_BACK);
 
-        let handle = dx_LoadGraph(
-            "./examples/resources/images/Player.bmp".as_ptr() as *const i8,
-            FALSE,
-        );
+        let handle = dx_LoadGraph("./resources/images/Player.bmp".as_ptr() as *const i8, FALSE);
 
         let (mut player_x, mut player_y) = (320, 240);
 

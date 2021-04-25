@@ -41,8 +41,12 @@ impl MouseCamera {
         }
     }
 
-    pub fn camera(&self) -> &Camera {
+    pub fn get_camera(&self) -> &Camera {
         &self.camera
+    }
+
+    pub fn get_camera_mut(&mut self) -> &mut Camera {
+        &mut self.camera
     }
 
     pub fn update(&mut self) -> Result<()> {

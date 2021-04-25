@@ -2,6 +2,7 @@ use std::path::Path;
 
 use dxlib_sys::{
     consts::*, dx_DeleteGraph, dx_DrawRotaGraph3, dx_LoadGraph, dx_MakeGraph, dx_SetDrawBlendMode,
+    dx_SetUseTextureToShader,
 };
 use smart_default::SmartDefault;
 
@@ -117,6 +118,10 @@ impl GraphicModel {
             .ensure_zero()?;
             dx_SetDrawBlendMode(BlendMode::NoBlend as i32, 0).ensure_zero()
         }
+    }
+
+    pub fn assign_shader_texture(&mut self, index: i32) -> Result<()> {
+        unsafe { dx_SetUseTextureToShader(index, self.handle).ensure_zero() }
     }
 
     fn close(&self) -> Result<()> {

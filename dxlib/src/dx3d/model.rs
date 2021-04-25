@@ -1,3 +1,4 @@
+use anyhow::Context as _;
 use dxlib_sys::{
     consts::*, dx_MV1DeleteModel, dx_MV1DrawFrame, dx_MV1DrawMesh, dx_MV1DrawModel,
     dx_MV1DrawTriangleList, dx_MV1LoadModel, dx_MV1SetLoadModelUsePhysicsMode, dx_MV1SetPosition,
@@ -27,7 +28,11 @@ impl Mv1Model {
     pub fn load<P: AsRef<Path>>(path: P) -> Result<Mv1Model> {
         let path = to_sjis_bytes(&path.as_ref().to_string_lossy());
         let path = path.as_ptr() as *const i8;
-        let handle = unsafe { dx_MV1LoadModel(path).ensure_not_minus1()? };
+        let handle = unsafe {
+            dx_MV1LoadModel(path)
+                .ensure_not_minus1()
+                .context("Model Load Failed")?
+        };
         let pos = Vector3::default();
         unsafe {
             dx_MV1SetLoadModelUsePhysicsMode(PhysicsMode::Disable as i32).ensure_not_minus1()?;

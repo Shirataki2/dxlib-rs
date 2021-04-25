@@ -348,6 +348,19 @@ impl From<Vector3<f32>> for DxVector {
     }
 }
 
+use dxlib_sys::data::Float4 as DxFloat4;
+
+impl From<Vector4<f32>> for DxFloat4 {
+    fn from(v: Vector4<f32>) -> DxFloat4 {
+        DxFloat4 {
+            x: v[0],
+            y: v[1],
+            z: v[2],
+            w: v[3],
+        }
+    }
+}
+
 impl<T> Vector3<T>
 where
     T: Mul<Output = T> + Sub<Output = T> + Clone + Copy,

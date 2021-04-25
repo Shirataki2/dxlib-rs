@@ -81,11 +81,7 @@ fn main() -> anyhow::Result<()> {
                     }
                 }
             }
-            if MESSAGE.split('\n').collect::<Vec<_>>()[ln]
-                .chars()
-                .count()
-                == ch
-            {
+            if MESSAGE.split('\n').collect::<Vec<_>>()[ln].chars().count() == ch {
                 ln += 1;
                 ch = 0;
             }

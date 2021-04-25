@@ -1,4 +1,4 @@
-use std::ptr;
+use std::{ffi::CStr, ptr};
 
 use crate::{
     color::Color,
@@ -12,29 +12,30 @@ use dxlib_sys::{
 use smart_default::SmartDefault;
 
 #[derive(Debug, Clone, SmartDefault)]
-pub struct TextStyle {
+pub struct TextStyle<'f> {
     pub coord: Vector2<i32>,
     #[default(_code = "Color::white()")]
     pub color: Color<u8>,
     #[default(_code = "Color::transparent()")]
     pub edge_color: Color<u8>,
-    pub font: Option<Font>,
+    pub font: Option<&'f Font>,
 }
 
-impl TextStyle {
-    pub fn builder() -> TextStyleBuilder {
+impl<'f> TextStyle<'f> {
+    pub fn builder() -> TextStyleBuilder<'f> {
         TextStyleBuilder::default()
     }
 
     pub fn draw(&self, string: &str) -> Result<()> {
         let s = to_sjis_bytes(string);
+        let s = CStr::from_bytes_with_nul(&s)?;
         unsafe {
-            match self.font {
-                Some(ref font) => {
+            match &self.font {
+                Some(font) => {
                     dx_DrawStringToHandle(
                         self.coord[0],
                         self.coord[1],
-                        s.as_ptr() as *const i8,
+                        s.as_ptr(),
                         self.color.as_u32(),
                         font.handle,
                         self.edge_color.as_u32(),
@@ -46,7 +47,7 @@ impl TextStyle {
                     dx_DrawString(
                         self.coord[0],
                         self.coord[1],
-                        s.as_ptr() as *const i8,
+                        s.as_ptr(),
                         self.color.as_u32(),
                         self.edge_color.as_u32(),
                     )
@@ -59,14 +60,14 @@ impl TextStyle {
 }
 
 #[derive(Debug, Clone, Default)]
-pub struct TextStyleBuilder {
+pub struct TextStyleBuilder<'f> {
     coord: Option<Vector2<i32>>,
     color: Option<Color<u8>>,
     edge_color: Option<Color<u8>>,
-    font: Option<Font>,
+    font: Option<&'f Font>,
 }
 
-impl TextStyleBuilder {
+impl<'f> TextStyleBuilder<'f> {
     pub fn coord(&mut self, v: Vector2<i32>) -> &mut Self {
         self.coord = Some(v);
         self
@@ -82,7 +83,7 @@ impl TextStyleBuilder {
         self
     }
 
-    pub fn font(&mut self, font: Font) -> &mut Self {
+    pub fn font(&mut self, font: &'f Font) -> &mut Self {
         self.font = Some(font);
         self
     }
@@ -98,9 +99,7 @@ impl TextStyleBuilder {
         if let Some(edge_color) = self.edge_color {
             text.edge_color = edge_color;
         }
-        if let Some(ref font) = self.font {
-            text.font = Some(font.clone());
-        }
+        text.font = self.font;
         text
     }
 }
@@ -188,8 +187,8 @@ impl FontBuilder {
         if let Some(font_type) = self.font_type {
             font.font_type = font_type;
         }
-        let name = match self.name {
-            Some(ref name) => to_sjis_bytes(name).as_ptr() as *const i8,
+        let name = match self.name.clone() {
+            Some(name) => to_sjis_bytes(&name).as_ptr() as *const i8,
             None => ptr::null::<i8>(),
         };
         unsafe {
@@ -203,7 +202,7 @@ impl FontBuilder {
                 0,
                 -1,
             )
-            .ensure_positive()?;
+            .ensure_not_minus1()?;
             font.handle = handle;
         }
         Ok(font)

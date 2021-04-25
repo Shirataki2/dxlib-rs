@@ -14,9 +14,8 @@ fn main() -> anyhow::Result<()> {
             exit(1);
         }
 
-        let model = dx_Live2D_LoadModel(
-            "./examples/resources/Hiyori/Hiyori.model3.json\0".as_ptr() as *const i8,
-        );
+        let model =
+            dx_Live2D_LoadModel("./resources/Hiyori/Hiyori.model3.json\0".as_ptr() as *const i8);
 
         dx_Live2D_Model_SetExtendRate(model, 4.0, 4.0);
         dx_Live2D_Model_SetTranslate(model, 0.0, 0.0);

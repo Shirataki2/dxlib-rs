@@ -4,4 +4,9 @@ target
 *.bmp
 lena.png
 Log.txt
-**/examples/resources
+**/resources/**/*.pso
+**/resources/**/*.vso
+**/resources/model/*
+**/resources/images/*
+**/resources/Hiyori/*
+!.gitkeep

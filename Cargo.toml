@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "dxlib",
+    "dxlib-sys",
+]

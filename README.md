@@ -30,7 +30,7 @@ fn main() -> anyhow::Result<()> {
         }
 
         let model = dx_Live2D_LoadModel(
-            "./examples/resources/Hiyori/Hiyori.model3.json\0".as_ptr() as *const i8,
+            "./resources/Hiyori/Hiyori.model3.json\0".as_ptr() as *const i8,
         );
 
         dx_Live2D_Model_SetExtendRate(model, 4.0, 4.0);
@@ -81,7 +81,7 @@ fn main() -> anyhow::Result<()> {
     let mut rng = thread_rng();
 
     let mut renderer = Live2DRenderer::new("Live2DCubismCore.dll")?;
-    let model = Live2DModel::load("./examples/resources/Hiyori/Hiyori.model3.json")?;
+    let model = Live2DModel::load("./resources/Hiyori/Hiyori.model3.json")?;
     renderer.add_model(&model)?;
     model.scale(Vector2::from(&[4.0, 4.0]))?;
 

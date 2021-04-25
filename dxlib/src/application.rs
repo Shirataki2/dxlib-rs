@@ -8,10 +8,20 @@ use crate::{
     utils::to_sjis_bytes,
 };
 use dxlib_sys::*;
+use smart_default::SmartDefault;
 use winapi::shared::windef::HWND;
 
 const DEFAULT_WIDTH: usize = 1280;
 const DEFAULT_HEIGHT: usize = 720;
+
+#[derive(Debug, Clone, Copy)]
+#[repr(i32)]
+pub enum Direct3D {
+    Dx9 = DX_DIRECT3D_9,
+    Dx9Ex = DX_DIRECT3D_9EX,
+    Dx11 = DX_DIRECT3D_11,
+    None = DX_DIRECT3D_NONE,
+}
 
 #[derive(Debug, Clone, Copy)]
 pub enum ColorBitDepth {
@@ -41,6 +51,7 @@ pub struct Application {
     refresh_rate: i32,
     screen_mode: ScreenMode,
     window_handle: Option<HWND>,
+    d3d: Direct3D,
     pub screen: Screen,
 }
 
@@ -49,19 +60,13 @@ impl Application {
         ApplicationBuilder::default()
     }
 
-    pub fn process_message(&self) -> Result<()> {
+    pub fn process_message(&mut self) -> Result<()> {
         let code = unsafe { dx_ProcessMessage() };
         if code != 0 {
             return Err(DxLibError::MessageProcessingFailed);
         }
-        Ok(())
-    }
-
-    pub fn update(&mut self) -> Result<()> {
-        self.process_message()?;
-        self.screen.flip()?;
         self.frame += 1;
-        self.screen.clear()
+        Ok(())
     }
 
     pub fn get_window_handle(&mut self) -> Result<HWND> {
@@ -114,7 +119,7 @@ impl Drop for Application {
     }
 }
 
-#[derive(Default)]
+#[derive(SmartDefault)]
 pub struct ApplicationBuilder {
     width: Option<usize>,
     height: Option<usize>,
@@ -122,6 +127,10 @@ pub struct ApplicationBuilder {
     refresh_rate: Option<i32>,
     screen_mode: Option<ScreenMode>,
     title: Option<String>,
+    d3d: Option<Direct3D>,
+    transparent: bool,
+    #[default = true]
+    vsync: bool,
 }
 
 impl ApplicationBuilder {
@@ -151,6 +160,21 @@ impl ApplicationBuilder {
         self
     }
 
+    pub fn direct3d(&mut self, direct3d: Direct3D) -> &mut Self {
+        self.d3d = Some(direct3d);
+        self
+    }
+
+    pub fn transparent_window(&mut self, flag: bool) -> &mut Self {
+        self.transparent = flag;
+        self
+    }
+
+    pub fn vsync(&mut self, flag: bool) -> &mut Self {
+        self.vsync = flag;
+        self
+    }
+
     pub fn add_plugin<P: Plugin>(&mut self, plugin: P) -> StdResult<&mut Self, P::Error> {
         plugin.build(self)?;
         Ok(self)
@@ -162,6 +186,23 @@ impl ApplicationBuilder {
         let color_depth = self.color_depth.unwrap_or_default();
         let refresh_rate = self.refresh_rate.unwrap_or(60);
         let screen_mode = self.screen_mode.unwrap_or(ScreenMode::Windowed);
+        let d3d = self.d3d.unwrap_or(Direct3D::Dx9Ex);
+
+        let code = unsafe { dx_SetUseDirect3DVersion(d3d as i32) };
+        if code != 0 {
+            return Err(DxLibError::NonZeroReturned);
+        }
+
+        if self.transparent {
+            unsafe {
+                dx_SetUseBackBufferTransColorFlag(TRUE).ensure_zero()?;
+                dx_SetUsePremulAlphaConvertLoad(TRUE).ensure_zero()?;
+            }
+        }
+
+        unsafe {
+            dx_SetWaitVSyncFlag(self.vsync as i32).ensure_zero()?;
+        }
 
         let _: Option<()> = self.title.clone().and_then(|title| {
             let title = to_sjis_bytes(&title);
@@ -206,6 +247,7 @@ impl ApplicationBuilder {
             window_handle: None,
             timer: time::Instant::now(),
             frame: 0,
+            d3d,
         })
     }
 }

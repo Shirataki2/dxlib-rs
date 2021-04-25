@@ -1,6 +1,6 @@
 use dxlib::prelude::*;
 
-const RESOLUTION: usize = 100;
+const RESOLUTION: usize = 40;
 
 fn main() -> anyhow::Result<()> {
     let mut app = Application::builder()
@@ -13,26 +13,31 @@ fn main() -> anyhow::Result<()> {
         .build()?;
     app.screen.set_draw_screen(DrawScreen::Back)?;
 
-    // let font = Font::builder()
-    //     .font_type(FontType::AntiAliasing4x4)
-    //     .size(30)
-    //     .thickness(3)
-    //     .build()?;
+    let mut builder = Font::builder();
+    let font = builder
+        .name("游明朝")
+        .font_type(FontType::AntiAliasing4x4)
+        .size(30)
+        .thickness(3)
+        .build()?;
 
-    // let style = TextStyle::builder()
-    //     .coord(Vector::from([70, 210]))
-    //     .color(Color::white())
-    //     .font(font)
-    //     .build();
+    let mut builder = TextStyle::builder();
+    let style = builder
+        .coord(Vector::from([70, 210]))
+        .color(Color::white())
+        .font(&font)
+        .build();
 
     let mut image = GraphicModel::load("lena.png")?;
     image.position = Vector::from([200, 200]);
     image.pivot = Vector::from([110, 110]);
-    while app.update().is_ok() && !KeyBoard::is_hit(Key::ESCAPE) {
+    while app.process_message().is_ok() && !KeyBoard::is_hit(Key::ESCAPE) {
+        app.screen.clear()?;
         draw_background()?;
         image.rotation += Angle::from_radians(0.05);
         image.draw()?;
-        // style.draw("HELLO, World")?;
+        style.draw("HELLO, World")?;
+        app.screen.flip()?;
     }
 
     Ok(())

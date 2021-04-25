@@ -12,7 +12,7 @@ use winapi::{
 use crate::data::*;
 
 #[link(name = "DxLib_x64")]
-extern "C" {
+extern "system" {
     pub fn dx_SetKeyInputStringColor(
         NmlStr: u64,
         NmlCur: u64,
@@ -7911,7 +7911,9 @@ extern "C" {
     pub fn dx_GetMenuItemIDWithStrLen(ItemName: *const i8, ItemNameLength: usize) -> i32;
     pub fn dx_GetMenuItemName(ItemID: i32, NameBuffer: *mut i8) -> i32;
     pub fn dx_LoadMenuResource(MenuResourceID: i32) -> i32;
-    pub fn dx_SetMenuItemSelectCallBackFunction(CallbackFunction: extern fn(*const i8, i32)) -> i32;
+    pub fn dx_SetMenuItemSelectCallBackFunction(
+        CallbackFunction: extern "C" fn(*const i8, i32),
+    ) -> i32;
     pub fn dx_SetWindowMenu(MenuProc: *mut libc::c_void) -> i32;
     pub fn dx_SetDisplayMenuFlag(Flag: i32) -> i32;
     pub fn dx_GetDisplayMenuFlag() -> i32;

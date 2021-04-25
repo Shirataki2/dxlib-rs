@@ -1,4 +1,9 @@
-use crate::{color::Color, dx3d::draw::Line3D, error::Result, math::vector::Vector3};
+use crate::{
+    color::Color,
+    dx3d::draw::{Line3D, Triangle3D},
+    error::Result,
+    math::vector::Vector3,
+};
 use smart_default::SmartDefault;
 
 #[derive(Debug, SmartDefault)]
@@ -14,6 +19,22 @@ pub struct GroundGrid {
 impl GroundGrid {
     pub fn draw(&self) -> Result<()> {
         let l = self.line_length;
+        Triangle3D {
+            pos1: Vector3::from([-l, 0.0, -l]),
+            pos2: Vector3::from([l, 0.0, -l]),
+            pos3: Vector3::from([-l, 0.0, l]),
+            color: Color::white(),
+            filled: true,
+        }
+        .draw()?;
+        Triangle3D {
+            pos1: Vector3::from([l, 0.0, l]),
+            pos2: Vector3::from([l, 0.0, -l]),
+            pos3: Vector3::from([-l, 0.0, l]),
+            color: Color::white(),
+            filled: true,
+        }
+        .draw()?;
         Line3D {
             start: Vector3::from([-l, 0.0, 0.0]),
             end: Vector3::from([l, 0.0, 0.0]),

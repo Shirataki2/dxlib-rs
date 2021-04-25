@@ -3,6 +3,7 @@
 pub use crate::ext::debug::fps::Fps;
 
 pub use crate::input::{
+    joypad::{DInputJoyState, Joypad, JoypadKey, JoypadType},
     keyboard::{Key, KeyBoard},
     mouse::{Mouse, MouseButton, MouseInput, MouseInputType},
 };
@@ -11,7 +12,7 @@ pub use crate::math::{angle::*, matrix::*, vector::*, DotProduct};
 
 pub use crate::plugin::{BackgroundPlugin, Plugin};
 
-pub use crate::application::Application;
+pub use crate::application::{Application, ColorBitDepth, Direct3D};
 
 pub use crate::color::Color;
 

@@ -46,6 +46,8 @@ pub struct Triangle3D {
 impl Triangle3D {
     pub fn draw(&self) -> Result<()> {
         unsafe {
+            dx_SetUseZBuffer3D(1).ensure_zero()?;
+            dx_SetWriteZBuffer3D(1).ensure_zero()?;
             dx_DrawTriangle3D(
                 self.pos1.into(),
                 self.pos2.into(),
