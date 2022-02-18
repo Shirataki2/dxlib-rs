@@ -8,6 +8,8 @@ pub enum DxLibError {
     InitializeFailed,
     #[error("Non Zero Returned")]
     NonZeroReturned,
+    #[error("{0}")]
+    ApiCallError(String),
     #[error("Null Returned")]
     NullReturned,
     #[error("Failed to process message")]
@@ -28,6 +30,7 @@ pub enum DxLibError {
 
 pub trait I32CodeExt: Sized {
     fn ensure_zero(&self) -> Result<()>;
+    fn ensure_zero_with(&self, message: &str) -> Result<()>;
     fn ensure_positive(&self) -> Result<Self>;
     fn ensure_not_minus1(&self) -> Result<Self>;
 }
@@ -38,6 +41,14 @@ impl I32CodeExt for i32 {
             Ok(())
         } else {
             Err(DxLibError::NonZeroReturned)
+        }
+    }
+
+    fn ensure_zero_with(&self, message: &str) -> Result<()> {
+        if *self == 0 {
+            Ok(())
+        } else {
+            Err(DxLibError::ApiCallError(message.to_string()))
         }
     }
 

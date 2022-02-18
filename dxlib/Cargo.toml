@@ -12,7 +12,7 @@ unstable = []
 [dependencies]
 dxlib-sys = { path = "../dxlib-sys" }
 thiserror = "1.0.24"
-anyhow = "1.0.40"
+anyhow = { version = "1.0.40", features = ["backtrace"] }
 bitflags = "1.2.1"
 enum-iterator = "0.6.0"
 encoding_rs = "0.8.28"

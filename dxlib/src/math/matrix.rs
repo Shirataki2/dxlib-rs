@@ -524,6 +524,18 @@ impl From<Matrix4x4<f32>> for DxMatrix {
     }
 }
 
+impl From<DxMatrix> for Matrix4x4<f32> {
+    fn from(v: DxMatrix) -> Matrix4x4<f32> {
+        let mut mat = Matrix4x4::zero();
+        for i in 0..4 {
+            for j in 0..4 {
+                mat[i][j] = v.m[i][j];
+            }
+        }
+        mat
+    }
+}
+
 pub struct T;
 
 impl<U, const ROW: usize, const COL: usize> BitXor<T> for Matrix<U, ROW, COL>

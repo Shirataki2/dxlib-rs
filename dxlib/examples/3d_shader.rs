@@ -17,7 +17,7 @@ fn main() -> anyhow::Result<()> {
         .build()?;
     let vertices = get_vertices();
 
-    let mut texture = GraphicModel::load("./resources/images/lena.png")?;
+    let mut texture = GraphicModel::load("./resources/images/lena.jpg")?;
     let mut vshader = VertexShader::load("./resources/shader/VertexShader.vso")?;
     let mut pshader = PixelShader::load("./resources/shader/PixelShader.pso")?;
 

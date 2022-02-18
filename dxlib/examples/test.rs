@@ -28,7 +28,7 @@ fn main() -> anyhow::Result<()> {
         .font(&font)
         .build();
 
-    let mut image = GraphicModel::load("lena.png")?;
+    let mut image = GraphicModel::load("./resources/images/lena.jpg")?;
     image.position = Vector::from([200, 200]);
     image.pivot = Vector::from([110, 110]);
     while app.process_message().is_ok() && !KeyBoard::is_hit(Key::ESCAPE) {

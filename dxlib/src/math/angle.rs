@@ -1,6 +1,8 @@
 use derive_more::{Add, AddAssign, Deref, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
-use num::cast;
+use num::{cast, Zero};
 use num_traits::{float::FloatCore, FloatConst};
+
+use crate::prelude::Vector3;
 
 #[derive(
     Debug,
@@ -40,5 +42,25 @@ impl<F: FloatCore + FloatConst> Angle<F> {
 
     pub fn deg2rad(deg: F) -> F {
         FloatCore::to_radians(deg)
+    }
+}
+
+impl Zero for Angle<f32> {
+    fn zero() -> Self {
+        Self(0.0f32)
+    }
+
+    fn is_zero(&self) -> bool {
+        self.0.is_zero()
+    }
+}
+
+impl<F: FloatCore + FloatConst> From<Vector3<Angle<F>>> for dxlib_sys::Vector {
+    fn from(v: Vector3<Angle<F>>) -> Self {
+        dxlib_sys::Vector {
+            x: v[0].to_f32().unwrap_or_default(),
+            y: v[1].to_f32().unwrap_or_default(),
+            z: v[2].to_f32().unwrap_or_default(),
+        }
     }
 }

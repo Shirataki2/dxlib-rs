@@ -41,6 +41,7 @@ impl Default for ColorBitDepth {
     }
 }
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub struct Application {
     width: usize,

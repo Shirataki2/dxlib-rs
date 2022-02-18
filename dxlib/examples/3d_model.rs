@@ -37,8 +37,8 @@ fn main() -> anyhow::Result<()> {
         *Angle::from_degrees(50.0),
     )))?;
 
-    let mut model = Mv1Model::load("./resources/model/Lat式ミクVer2.3_Normal.pmd")?;
-
+    let mut model = Mv1Model::load("./resources/model/Lat式ミクVer2.31_Normal.pmd")?;
+    model.set_position(Vector3::from([0.0, 0.0, 5.0]))?;
     let mut camera = MouseCamera::new(
         camera,
         Vector3::from([0.0, 16.0, -25.0]),
@@ -90,6 +90,7 @@ fn main() -> anyhow::Result<()> {
             model.draw()?;
 
             writeln!(writer, "FPS: {:.2}", fps)?;
+            writeln!(writer, "{:#?}", model.get_matrix())?;
             writeln!(writer, "左クリック　＋　ドラッグ: 回転")?;
             writeln!(writer, "中クリック　＋　ドラッグ: 移動")?;
             writeln!(writer, "マウスホイール　　　　　: 拡大縮小")?;

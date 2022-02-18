@@ -348,6 +348,13 @@ impl From<Vector3<f32>> for DxVector {
     }
 }
 
+
+impl From<DxVector> for Vector3<f32> {
+    fn from(v: DxVector) -> Vector3<f32> {
+        Vector3::from([v.x, v.y, v.z])
+    }
+}
+
 use dxlib_sys::data::Float4 as DxFloat4;
 
 impl From<Vector4<f32>> for DxFloat4 {

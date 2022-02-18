@@ -32,7 +32,7 @@ impl<'model> Live2DRenderer<'model> {
     }
 
     pub fn add_model(&mut self, model: &'model Live2DModel) -> Result<()> {
-        self.models.insert(model.handle, &model);
+        self.models.insert(model.handle, model);
         Ok(())
     }
 
