@@ -1,4 +1,4 @@
-pub use super::Vertex3DShader;
+pub use super::{Physics, Vertex3DShader};
 
 pub use super::model::Mv1Model;
 

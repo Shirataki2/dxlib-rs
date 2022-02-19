@@ -50,54 +50,50 @@ fn main() -> anyhow::Result<()> {
 
     World::set_ambient(Color::red())?;
 
-    unsafe {
-        dx_MV1PhysicsResetState(model.handle);
-        dx_MV1SetShapeRate(model.handle, 29, 1.0, 0);
-        let anim_id = 0;
-        let idx = dx_MV1AttachAnim(model.handle, anim_id, -1, 0);
-        let total_time = dx_MV1GetAnimTotalTime(model.handle, anim_id);
-        let mut t = 0.0;
-        let mut ctr: i128 = 0;
-        let mut fps = Fps::new(240);
-        while app.process_message().is_ok() && !KeyBoard::is_hit(Key::ESCAPE) {
-            app.screen.clear()?;
+    model.reset_physics()?;
+    model.set_shape(29, 1.0)?;
+    let anim = model.attach_animation(0)?;
+    let total_time = anim.get_total_time()?;
+    let mut t = 0.0;
+    let mut ctr: i128 = 0;
+    let mut fps = Fps::new(240);
+    while app.process_message().is_ok() && !KeyBoard::is_hit(Key::ESCAPE) {
+        app.screen.clear()?;
 
-            let fps = fps.update();
+        let fps = fps.update();
 
-            writer.clear()?;
-            camera.update()?;
-            grid.draw()?;
+        writer.clear()?;
+        camera.update()?;
+        grid.draw()?;
 
-            t += 30.0 / fps as f32;
-            if t >= total_time {
-                t = 0.0;
-            }
-            dx_MV1SetAttachAnimTime(model.handle, idx, t);
-
-            if ctr > 10 {
-                dx_MV1PhysicsCalculation(model.handle, 1000.0 / fps as f32);
-            }
-
-            let r = match ctr % 300 {
-                103 | 221 | 277 => 0.2,
-                104 | 222 | 278 => 1.0,
-                105 | 223 | 279 => 0.8,
-                106 | 224 | 280 => 0.2,
-                _ => 0.0,
-            };
-            dx_MV1SetShapeRate(model.handle, 16, r, 0);
-
-            model.draw()?;
-
-            writeln!(writer, "FPS: {:.2}", fps)?;
-            writeln!(writer, "{:#?}", model.get_matrix())?;
-            writeln!(writer, "左クリック　＋　ドラッグ: 回転")?;
-            writeln!(writer, "中クリック　＋　ドラッグ: 移動")?;
-            writeln!(writer, "マウスホイール　　　　　: 拡大縮小")?;
-            ctr += 1;
-
-            app.screen.flip()?;
+        t += 30.0 / fps as f32;
+        if t >= total_time {
+            t = 0.0;
         }
+        anim.set_time(t)?;
+
+        if ctr > 0 {
+            model.simulate_millis(1000.0 / fps as f32)?;
+        }
+
+        let r = match ctr % 300 {
+            103 | 221 | 277 => 0.2,
+            104 | 222 | 278 => 1.0,
+            105 | 223 | 279 => 0.8,
+            106 | 224 | 280 => 0.2,
+            _ => 0.0,
+        };
+        model.set_shape(16, r)?;
+
+        model.draw()?;
+
+        writeln!(writer, "FPS: {:.2}", fps)?;
+        writeln!(writer, "左クリック　＋　ドラッグ: 回転")?;
+        writeln!(writer, "中クリック　＋　ドラッグ: 移動")?;
+        writeln!(writer, "マウスホイール　　　　　: 拡大縮小")?;
+        ctr += 1;
+
+        app.screen.flip()?;
     }
 
     Ok(())

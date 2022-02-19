@@ -16,3 +16,6 @@ pub mod screen;
 pub mod sound;
 pub mod utils;
 pub mod writer;
+
+#[macro_use]
+extern crate anyhow;

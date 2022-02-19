@@ -348,7 +348,6 @@ impl From<Vector3<f32>> for DxVector {
     }
 }
 
-
 impl From<DxVector> for Vector3<f32> {
     fn from(v: DxVector) -> Vector3<f32> {
         Vector3::from([v.x, v.y, v.z])

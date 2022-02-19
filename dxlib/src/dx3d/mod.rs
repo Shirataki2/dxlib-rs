@@ -69,3 +69,11 @@ impl From<Vertex3DShader> for DxVertex3DShader {
         }
     }
 }
+
+pub trait Physics {
+    type Error: std::error::Error;
+
+    fn reset_physics(&self) -> Result<(), Self::Error>;
+
+    fn simulate_millis(&self, millis: f32) -> Result<(), Self::Error>;
+}
