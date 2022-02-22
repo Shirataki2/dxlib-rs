@@ -12,6 +12,7 @@ fn main() -> anyhow::Result<()> {
     let mut app = Application::builder()
         .screen_size(1000, 1000)
         .title("3Dモデルの表示テスト")
+        .window_style(WindowStyle::NoTitleBarNoBorder)
         .direct3d(Direct3D::Dx11)
         .add_plugin(BackgroundPlugin {
             run_always: true,

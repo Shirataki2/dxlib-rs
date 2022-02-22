@@ -12,7 +12,7 @@ pub use crate::math::{angle::*, matrix::*, vector::*, DotProduct};
 
 pub use crate::plugin::{BackgroundPlugin, Plugin};
 
-pub use crate::application::{Application, ColorBitDepth, Direct3D};
+pub use crate::application::{Application, ColorBitDepth, Direct3D, WindowStyle};
 
 pub use crate::color::Color;
 

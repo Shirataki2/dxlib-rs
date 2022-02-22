@@ -41,6 +41,28 @@ impl Default for ColorBitDepth {
     }
 }
 
+#[derive(Debug, Clone, Copy)]
+pub enum WindowStyle {
+    Default = 0,
+    NoTitleBar = 1,
+    NoTitleBarNoBorder = 2,
+    NoBorder = 3,
+    None = 4,
+    NoMinimize = 5,
+    WithToolBar = 6,
+    WithMaximizeInitalizeNormal = 7,
+    WithMaximizeInitializeMaximum = 8,
+    NoSolidFrame = 9,
+    WithMaximizeNoSolidFrame = 10,
+    NoCloseNoMinimize = 11,
+}
+
+impl Default for WindowStyle {
+    fn default() -> WindowStyle {
+        WindowStyle::Default
+    }
+}
+
 #[allow(dead_code)]
 #[derive(Debug)]
 pub struct Application {
@@ -52,6 +74,7 @@ pub struct Application {
     refresh_rate: i32,
     screen_mode: ScreenMode,
     window_handle: Option<HWND>,
+    window_style: WindowStyle,
     d3d: Direct3D,
     pub screen: Screen,
 }
@@ -129,6 +152,7 @@ pub struct ApplicationBuilder {
     screen_mode: Option<ScreenMode>,
     title: Option<String>,
     d3d: Option<Direct3D>,
+    window_style: Option<WindowStyle>,
     transparent: bool,
     #[default = true]
     vsync: bool,
@@ -176,6 +200,11 @@ impl ApplicationBuilder {
         self
     }
 
+    pub fn window_style(&mut self, style: WindowStyle) -> &mut Self {
+        self.window_style = Some(style);
+        self
+    }
+
     pub fn add_plugin<P: Plugin>(&mut self, plugin: P) -> StdResult<&mut Self, P::Error> {
         plugin.build(self)?;
         Ok(self)
@@ -187,9 +216,15 @@ impl ApplicationBuilder {
         let color_depth = self.color_depth.unwrap_or_default();
         let refresh_rate = self.refresh_rate.unwrap_or(60);
         let screen_mode = self.screen_mode.unwrap_or(ScreenMode::Windowed);
+        let window_style = self.window_style.unwrap_or_default();
         let d3d = self.d3d.unwrap_or(Direct3D::Dx9Ex);
 
         let code = unsafe { dx_SetUseDirect3DVersion(d3d as i32) };
+        if code != 0 {
+            return Err(DxLibError::NonZeroReturned);
+        }
+
+        let code = unsafe { dx_SetWindowStyleMode(window_style as i32) };
         if code != 0 {
             return Err(DxLibError::NonZeroReturned);
         }
@@ -245,6 +280,7 @@ impl ApplicationBuilder {
             refresh_rate,
             screen_mode,
             screen,
+            window_style, 
             window_handle: None,
             timer: time::Instant::now(),
             frame: 0,

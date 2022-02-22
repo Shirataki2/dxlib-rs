@@ -21,7 +21,7 @@ fn main() -> anyhow::Result<()> {
     let mut writer = DebugWriter::default();
 
     let mut renderer = Live2DRenderer::new("Live2DCubismCore.dll")?;
-    let model = Live2DModel::load("./resources/Hiyori/Hiyori.model3.json")?;
+    let model = Live2DModel::load("./resources/Hiyori/hiyori_free_t08.model3.json")?;
     renderer.add_model(&model)?;
     model.scale(Vector2::from([4.0, 4.0]))?;
 
@@ -34,7 +34,7 @@ fn main() -> anyhow::Result<()> {
 
         let mouse_pos = Mouse::get_position_as_f32()?;
         if model.is_motion_finished()? {
-            model.start_motion("Idle", rng.gen_range(0..=8))?;
+            model.start_motion("Idle", rng.gen_range(0..3))?;
         }
         model.update(Duration::from_secs_f32(1.0 / 60.0))?;
         renderer.render()?;

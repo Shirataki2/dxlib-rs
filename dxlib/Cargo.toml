@@ -32,3 +32,4 @@ rand = "0.8"
 
 cpal = "*"
 rustfft = "*"
+specs = { version = "0.17.0", features = ["specs-derive"] }
