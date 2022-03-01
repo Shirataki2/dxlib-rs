@@ -27,6 +27,15 @@ fn main() -> anyhow::Result<()> {
     }
     .draw()?;
 
+    CircleAntiAlias {
+        center: Vector2::from([300.0, 200.0]),
+        radius: 100.0,
+        color: Color::green(),
+        thickness: 10.0,
+        ..Default::default()
+    }
+    .draw()?;
+
     wait_any_key()?;
 
     Ok(())
