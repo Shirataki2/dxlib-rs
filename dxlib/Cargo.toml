@@ -28,6 +28,7 @@ version = "0.3"
 features = ["winuser", "windef"]
 
 [dev-dependencies]
+winapi = "0.3.9"
 rand = "0.8"
 cpal = "0.13.5"
 rustfft = "6.0.1"

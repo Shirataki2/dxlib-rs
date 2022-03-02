@@ -8,11 +8,17 @@ pub enum ObjectType {
     Paddle,
     Ball,
     Brick,
+    Empty,
+    UI,
 }
 
 #[derive(Debug, Component, Deref, DerefMut)]
 #[storage(VecStorage)]
 pub struct Position(pub Vector2<f32>);
+
+#[derive(Debug, Component, Deref, DerefMut)]
+#[storage(VecStorage)]
+pub struct Velocity(pub Vector2<f32>);
 
 #[derive(Debug, Component, Deref, DerefMut)]
 #[storage(VecStorage)]

@@ -1,4 +1,5 @@
 use dxlib::prelude::*;
+use smart_default::SmartDefault;
 
 #[derive(Debug, Default)]
 pub struct Writer(pub DebugWriter);
@@ -21,15 +22,17 @@ impl ScreenSize {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, SmartDefault)]
 pub struct PlayerSettings {
+    #[default(0.0125)]
     pub paddle_velocity: f32,
+    #[default(0.0075)]
+    pub ball_velocity: f32,
 }
 
-impl Default for PlayerSettings {
-    fn default() -> Self {
-        Self {
-            paddle_velocity: 0.0125,
-        }
-    }
+#[derive(Debug, SmartDefault)]
+pub struct PlayerData {
+    pub score: u64,
+    #[default(5)]
+    pub lives: u64,
 }

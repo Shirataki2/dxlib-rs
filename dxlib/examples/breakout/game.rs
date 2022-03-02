@@ -26,6 +26,7 @@ impl Breakout {
         let mut world = World::new();
 
         world.register::<cmp::Position>();
+        world.register::<cmp::Velocity>();
         world.register::<cmp::Rect>();
         world.register::<cmp::Color>();
         world.register::<cmp::ObjectType>();
@@ -35,6 +36,7 @@ impl Breakout {
         world.insert(res::FpsRecorder(Some(Fps::new(240))));
     
         world.insert(res::ScreenSize { width, height });
+        world.insert(res::PlayerData::default());
 
         ent::Paddle::register(
             &mut world, 
@@ -46,15 +48,49 @@ impl Breakout {
         ent::Ball::register(
             &mut world, 
             Vector2::from([0.5, 0.5]),
-            Vector2::from([0.02, 0.02]), 
+            Vector2::from([0.25, 0.25]),
+            Vector2::from([0.0125, 0.0125]), 
             Color::blue()
         );
 
+        ent::Ui::register(
+            &mut world,
+            Vector2::from([0.4, 0.0]),
+        );
+
+        let brick_size = Vector2::from([0.09, 0.04]);
+        let brick_colors = vec![
+            Color::<u8>::green(),
+            Color::blue(),
+            Color::magenta(),
+            Color::cyan(),
+        ];
+
+        for y in 0..6 {
+            for x in 0..8 {
+                let position = Vector2::from([
+                    0.5 - 0.10 * (x as f32 - 3.5),
+                    0.25 - 0.05 * (y as f32 - 3.0),
+                ]);
+                let color = brick_colors[y % brick_colors.len()];
+                ent::Brick::register(
+                    &mut world,
+                    position,
+                    brick_size,
+                    color,
+                );
+            }
+        }
+
         let dispatcher = DispatcherBuilder::new()
             .with(sys::ClearDebugLog, "clear_debug_log", &[])
+            .with(sys::BallCollider, "ball_collider", &[])
             .with(sys::PaddleMover, "paddle_mover", &[])
-            .with(sys::BallRenderer, "ball_renderer", &[])
+            .with(sys::BallMover, "ball_mover", &["ball_collider"])
             .with(sys::PaddleRenderer, "paddle_renderer", &[])
+            .with(sys::BallRenderer, "ball_renderer", &[])
+            .with(sys::BrickRenderer, "bricks_renderer", &[])
+            .with(sys::UiRenderer, "ui_renderer", &[])
             .with(sys::ShowFps, "show_fps", &["clear_debug_log"])
             .build();
 
