@@ -33,6 +33,14 @@ pub struct PlayerSettings {
 #[derive(Debug, SmartDefault)]
 pub struct PlayerData {
     pub score: u64,
-    #[default(5)]
+    #[default(3)]
     pub lives: u64,
+}
+
+#[derive(Debug, SmartDefault, PartialEq, Eq)]
+pub enum GameState {
+    #[default]
+    Running,
+    Restart,
+    GameOver,
 }

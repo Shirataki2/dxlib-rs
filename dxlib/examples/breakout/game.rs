@@ -1,9 +1,9 @@
-use specs::*;
-use dxlib::prelude::*;
-use crate::systems as sys;
-use crate::resources as res;
 use crate::components as cmp;
 use crate::entities as ent;
+use crate::resources as res;
+use crate::systems as sys;
+use dxlib::prelude::*;
+use specs::*;
 
 pub struct Breakout {
     app: Application,
@@ -34,29 +34,27 @@ impl Breakout {
         world.insert(res::PlayerSettings::default());
         world.insert(res::Writer(DebugWriter::default()));
         world.insert(res::FpsRecorder(Some(Fps::new(240))));
-    
+
         world.insert(res::ScreenSize { width, height });
         world.insert(res::PlayerData::default());
+        world.insert(res::GameState::default());
 
         ent::Paddle::register(
-            &mut world, 
+            &mut world,
             Vector2::from([0.5, 0.95]),
-            Vector2::from([0.125, 0.03]), 
-            Color::red()
+            Vector2::from([0.125, 0.03]),
+            Color::red(),
         );
 
         ent::Ball::register(
-            &mut world, 
+            &mut world,
             Vector2::from([0.5, 0.5]),
             Vector2::from([0.25, 0.25]),
-            Vector2::from([0.0125, 0.0125]), 
-            Color::blue()
+            Vector2::from([0.0125, 0.0125]),
+            Color::blue(),
         );
 
-        ent::Ui::register(
-            &mut world,
-            Vector2::from([0.4, 0.0]),
-        );
+        ent::Ui::register(&mut world, Vector2::from([0.4, 0.0]));
 
         let brick_size = Vector2::from([0.09, 0.04]);
         let brick_colors = vec![
@@ -73,12 +71,7 @@ impl Breakout {
                     0.25 - 0.05 * (y as f32 - 3.0),
                 ]);
                 let color = brick_colors[y % brick_colors.len()];
-                ent::Brick::register(
-                    &mut world,
-                    position,
-                    brick_size,
-                    color,
-                );
+                ent::Brick::register(&mut world, position, brick_size, color);
             }
         }
 
@@ -91,6 +84,7 @@ impl Breakout {
             .with(sys::BallRenderer, "ball_renderer", &[])
             .with(sys::BrickRenderer, "bricks_renderer", &[])
             .with(sys::UiRenderer, "ui_renderer", &[])
+            .with(sys::KeyInteraction, "key_interaction", &[])
             .with(sys::ShowFps, "show_fps", &["clear_debug_log"])
             .build();
 
@@ -104,10 +98,10 @@ impl Breakout {
     pub fn run(&mut self) -> anyhow::Result<()> {
         while self.app.process_message().is_ok() && !KeyBoard::is_hit(Key::ESCAPE) {
             self.app.screen.clear()?;
-            
+
             self.dispatcher.dispatch(&self.world);
             self.world.maintain();
-    
+
             self.app.screen.flip()?;
         }
         Ok(())

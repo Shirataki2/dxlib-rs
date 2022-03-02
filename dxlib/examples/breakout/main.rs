@@ -1,9 +1,10 @@
-#[macro_use] extern crate log;
+#[macro_use]
+extern crate log;
 
-mod resources;
 mod components;
 mod entities;
 mod game;
+mod resources;
 mod systems;
 
 fn main() -> anyhow::Result<()> {
@@ -18,12 +19,10 @@ fn main() -> anyhow::Result<()> {
 }
 
 fn load_font() -> anyhow::Result<()> {
-    use winapi::um::wingdi::AddFontResourceExA;
     use std::{ffi::CString, ptr::null_mut};
+    use winapi::um::wingdi::AddFontResourceExA;
     let font_path = CString::new("../resources/fonts/MplusCodeLatin60-Bold.ttf")?;
-    let code = unsafe {
-        AddFontResourceExA(font_path.as_ptr(), 0, null_mut())
-    };
+    let code = unsafe { AddFontResourceExA(font_path.as_ptr(), 0, null_mut()) };
     if code != 0 {
         panic!("Failed to load font");
     }
@@ -31,11 +30,9 @@ fn load_font() -> anyhow::Result<()> {
 }
 
 fn unload_font() -> anyhow::Result<()> {
-    use winapi::um::wingdi::RemoveFontResourceExA;
     use std::{ffi::CString, ptr::null_mut};
+    use winapi::um::wingdi::RemoveFontResourceExA;
     let font_path = CString::new("../resources/fonts/MplusCodeLatin60-Bold.ttf")?;
-    unsafe {
-        RemoveFontResourceExA(font_path.as_ptr(), 0, null_mut())
-    };
+    unsafe { RemoveFontResourceExA(font_path.as_ptr(), 0, null_mut()) };
     Ok(())
 }

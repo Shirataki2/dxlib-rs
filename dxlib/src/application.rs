@@ -280,7 +280,7 @@ impl ApplicationBuilder {
             refresh_rate,
             screen_mode,
             screen,
-            window_style, 
+            window_style,
             window_handle: None,
             timer: time::Instant::now(),
             frame: 0,

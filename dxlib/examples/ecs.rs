@@ -1,5 +1,5 @@
-use std::fmt::Write as _;
 use rand::Rng;
+use std::fmt::Write as _;
 
 use dxlib::prelude::*;
 use specs::*;
@@ -34,8 +34,7 @@ struct Velocity {
 struct UpdatePos;
 
 impl<'a> System<'a> for UpdatePos {
-    type SystemData = (ReadStorage<'a, Velocity>,
-                       WriteStorage<'a, Position>);
+    type SystemData = (ReadStorage<'a, Velocity>, WriteStorage<'a, Position>);
 
     fn run(&mut self, (vel, mut pos): Self::SystemData) {
         for (vel, pos) in (&vel, &mut pos).join() {
@@ -49,7 +48,7 @@ struct ClearDebugLog;
 
 impl<'a> System<'a> for ClearDebugLog {
     type SystemData = Write<'a, Writer>;
-    
+
     fn run(&mut self, mut writer: Self::SystemData) {
         let _ = writer.0.clear();
     }
@@ -58,7 +57,7 @@ impl<'a> System<'a> for ClearDebugLog {
 struct Renderer;
 impl<'a> System<'a> for Renderer {
     type SystemData = (ReadStorage<'a, Position>, ReadStorage<'a, ObjectColor>);
-    
+
     fn run(&mut self, (pos, color): Self::SystemData) {
         for (pos, color) in (&pos, &color).join() {
             let _ = CircleAntiAlias {
@@ -66,16 +65,16 @@ impl<'a> System<'a> for Renderer {
                 radius: 10.0,
                 color: color.0,
                 ..Default::default()
-            }.draw();
+            }
+            .draw();
         }
     }
 }
 
 struct Bouncer;
 impl<'a> System<'a> for Bouncer {
-    type SystemData = (ReadStorage<'a, Position>,
-                       WriteStorage<'a, Velocity>);
-    
+    type SystemData = (ReadStorage<'a, Position>, WriteStorage<'a, Velocity>);
+
     fn run(&mut self, (pos, mut vel): Self::SystemData) {
         for (pos, vel) in (&pos, &mut vel).join() {
             if pos.x > SIZE as f32 - 10.0 || pos.x < 10.0 {
@@ -92,7 +91,7 @@ struct ShowFps;
 
 impl<'a> System<'a> for ShowFps {
     type SystemData = (Write<'a, FpsRecorder>, Write<'a, Writer>);
-    
+
     fn run(&mut self, (mut fps, mut writer): Self::SystemData) {
         let fps = fps.0.as_mut().unwrap().update();
         let _ = writeln!(writer.0, "FPS: {:0.2}", fps);
@@ -128,8 +127,13 @@ fn main() -> anyhow::Result<()> {
             vel_x *= 5.0;
             vel_y *= 5.0;
         }
-        let color = Color::from(&[rng.gen_range(64..250), rng.gen_range(64..250), rng.gen_range(64..250)]);
-        world.create_entity()
+        let color = Color::from(&[
+            rng.gen_range(64..250),
+            rng.gen_range(64..250),
+            rng.gen_range(64..250),
+        ]);
+        world
+            .create_entity()
             .with(Position { x, y })
             .with(Velocity { x: vel_x, y: vel_y })
             .with(ObjectColor(color))
@@ -146,7 +150,7 @@ fn main() -> anyhow::Result<()> {
 
     while app.process_message().is_ok() && !KeyBoard::is_hit(Key::ESCAPE) {
         app.screen.clear()?;
-        
+
         dispatcher.dispatch(&world);
         world.maintain();
 
